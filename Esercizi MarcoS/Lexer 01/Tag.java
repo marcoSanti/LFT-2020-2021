@@ -2,6 +2,7 @@
 
 	COLLEZIONE DI INTERI statiche che vengono usati come tag
 	si possono accedere come Tag.EOF per esempio senza poterle però modificare!
+	I tag sono le "categorie" dei vari tipi di token che vengono accettati
 
  */
 public class Tag {

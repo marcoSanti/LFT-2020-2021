@@ -4,7 +4,6 @@
 */
 
 public class NumberTok extends Token {
-	// ... completare ...
 
 	int number;
 
@@ -15,5 +14,4 @@ public class NumberTok extends Token {
 		number = Integer.valueOf(lessema);
 	}
 
-	
 }

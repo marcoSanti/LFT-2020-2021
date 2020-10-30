@@ -17,8 +17,6 @@ public class Lexer {
     public Token lexical_scan(BufferedReader br) {
 
 
-
-
         //questo lo eseguo fino a che hp un carattere WS. quando non lo ho più esco dal ciclo
         while (peek == ' ' || peek == '\t' || peek == '\n' || peek == '\r') {
             if (peek == '\n') line++;
@@ -26,13 +24,9 @@ public class Lexer {
         }
 
 
-
-
-
-
         switch (peek) {
 
-            /**GESTISCO I CASI DI   SIMBOLI SINGOLI*/
+            /**GESTISCO I CASI DI SIMBOLI SINGOLI*/
         
             case '!':
                 peek = ' '; //questo peek lo metto per poter ritornare il giro successivo al while a inizio codice
@@ -81,10 +75,10 @@ public class Lexer {
 
             /**GESTISCO I CASI DI SINGOLI SIMBOLI E DELL'= E DEI < E > IN QUANTO DEVO DISAMBIGUARE SE SONO >= O <= */
             //questi sono automi del tipo 
-
-            //                 s1       s2     __
-            //       ---->Q0------>Q1-------->|Q2|
-            //                                ----
+            //                                ______
+            //                 s1       s2    |    |
+            //       ---->Q0------>Q1-------->| Q2 |
+            //                                |____|
 
             
             case '&':
@@ -247,7 +241,7 @@ public class Lexer {
 
 
                     /**CONTROLLO CHE NON SONO USCITO PER UN SIBMOLO NON I N ALFABETO */
-                        //se peek non è una lettera                                       //se peek non sta nel nostro alfabeto
+                        //se peek non è una lettera                  e anche                 //se peek non sta nel nostro alfabeto
                     if(!((peek >= 'a' && peek <= 'z') || (peek >= 'A' && peek <= 'Z')) &&  ("|&!(){}+-*/=;>< ".indexOf(peek) < 0)){
                         System.err.println("Error: found invalid number: " + peek); //carattere non ammesso. esco
                         return null;
