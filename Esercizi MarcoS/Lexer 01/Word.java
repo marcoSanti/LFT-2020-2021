@@ -8,7 +8,7 @@ public class Word extends Token {
 
     public Word(int tag, String s) { super(tag); lexeme=s; }
 
-    public String toString() { return "<" + tag + ", " + lexeme + ">"; }
+    public String toString() { return "< " + tag + " , " + lexeme + " >"; }
 
     public static final Word
 		cond       = new Word(Tag.COND, "cond"),

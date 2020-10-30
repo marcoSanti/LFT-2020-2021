@@ -28,8 +28,8 @@ public class Lexer {
 
 
 
-
-
+       
+        
         switch (peek) {
 
             //se leggo un ! ritorno la costante che indica il not
@@ -113,7 +113,7 @@ public class Lexer {
                     peek = ' ';
                     return Word.or;
                 }else{
-                    System.err.println("Erroneous character" + " after & : "  + peek );
+                    System.err.println("Erroneous character at or search" + " after & : "  + peek );
                     return null;
                 }
 
@@ -130,6 +130,7 @@ public class Lexer {
                     peek = ' ';
                     return Word.le;
                 }
+                
 
             
             case '>':
@@ -167,24 +168,98 @@ public class Lexer {
                 if (Character.isLetter(peek)) {
 
 	            // ... gestire il caso degli identificatori e delle parole chiave //
-
+                
                 //ottengo la stringa
                 String lessema = "";
-                while(peek != ' ' || peek != (char) -1){
-                    lessema += peek;
-                    readch(br);
-                }
+                
+                do{
+                    
+                    if( (peek >='a' && peek <='z') || (peek >='A' && peek <= 'Z')  || Character.isDigit(peek)){
+
+                        lessema = lessema + peek; // ho un carattere nell'alfabeto quindi continuo
+                        readch(br);
+
+                    }else{
+                        System.err.println("Error: found invalid character:" + peek ); //carattere non ammesso. esco
+                        return null;
+                    }
+                    
+                }while((peek != ' ' ) && (peek != (char) -1));
 
                 //devo fare uno switch per potere controllare che sia una keywoard oppure che sia solo un identificatore
+                //controllo che lessema non sia una keyword e nel caso ritorno il tag
 
+                switch(lessema){
 
+                    case "cond":
+                        peek = ' ';
+                        return Word.cond;
+
+                    case "when":
+                        peek = ' ';
+                        return Word.when;
+
+                    case "then": 
+                        peek = ' ';
+                        return Word.then;
+
+                    case "else":
+                        peek = ' ';
+                        return Word.elsetok;
+
+                    case "while":
+                        peek = ' ';
+                        return Word.whiletok;
+
+                    case "do":
+                        peek = ' ';
+                        return Word.dotok;
+
+                    case "seq":
+                        peek = ' ';
+                        return Word.seq;
+
+                    case "print":
+                        peek = ' ';
+                        return Word.print;
+
+                    case "read":
+                        peek = ' ';
+                        return Word.read;
+                        
+
+                    default:  //ritorno idenificatore in quanto non è keyword del linguaggio
+                        peek = ' ';
+                        return new Word(Tag.ID, lessema);
+                }
+
+                
 
                 } else if (Character.isDigit(peek)) {
 
-	            // ... gestire il caso dei numeri ... //
+                // ... gestire il caso dei numeri ... //
+                
+                String lessema = "";
+
+                do{
+
+                    if( (peek >='a' && peek <='z') || (peek >='A' && peek <= 'Z')  || Character.isDigit(peek)){
+
+                        lessema = lessema + peek; // ho un carattere nell'alfabeto quindi continuo
+                        readch(br);
+
+                    }else{
+                        System.err.println("Error: found invalid number: " + peek ); //carattere non ammesso. esco
+                        return null;
+                    }
+                    
+                }while((peek != ' ') && (peek != (char) -1));
+
+                return new NumberTok(Tag.NUM, lessema);
+
 
                 } else {
-                        System.err.println("Erroneous character: " + peek );
+                        System.err.println("Error: unknown error!: " + peek );
                         return null;
                 }
          }
@@ -197,7 +272,7 @@ public class Lexer {
 		
     public static void main(String[] args) {
         Lexer lex = new Lexer();
-        String path = "...path..."; // il percorso del file da leggere
+        String path = "test.txt"; // il percorso del file da leggere
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             Token tok;
@@ -206,7 +281,7 @@ public class Lexer {
             do {
                 tok = lex.lexical_scan(br);
                 System.out.println("Scan: " + tok);
-            } while (tok.tag != Tag.EOF);
+            } while (tok != null && tok.tag != Tag.EOF);
 
 
             br.close();
