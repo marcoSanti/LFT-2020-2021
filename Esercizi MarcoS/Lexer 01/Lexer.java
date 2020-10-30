@@ -1,16 +1,16 @@
-import java.io.*; 
+import java.io.*;
 import java.util.*;
 
 public class Lexer {
 
-    public static int line = 1;   
-    private char peek = ' ';   
-    
-    private void readch(BufferedReader br) {  
+    public static int line = 1;
+    private char peek = ' ';
+
+    private void readch(BufferedReader br) {
         try {
-            peek = (char) br.read();  //leggo un char e lo metto in peek
+            peek = (char) br.read(); //leggo un char e lo metto in peek
         } catch (IOException exc) {
-            peek = (char) -1; // ERROR
+            peek = (char) - 1; // ERROR
         }
     }
 
@@ -20,32 +20,30 @@ public class Lexer {
 
 
         //questo lo eseguo fino a che hp un carattere WS. quando non lo ho più esco dal ciclo
-        while (peek == ' ' || peek == '\t' || peek == '\n'  || peek == '\r') {  
+        while (peek == ' ' || peek == '\t' || peek == '\n' || peek == '\r') {
             if (peek == '\n') line++;
             readch(br);
         }
-        
 
 
 
-       
-        
+
+
+
         switch (peek) {
 
-            //se leggo un ! ritorno la costante che indica il not
+            /**GESTISCO I CASI DI   SIMBOLI SINGOLI*/
+        
             case '!':
-                peek = ' ';  //questo peek lo metto per poter ritornare il giro successivo al while a inizio codice
+                peek = ' '; //questo peek lo metto per poter ritornare il giro successivo al while a inizio codice
                 return Token.not;
 
-
-
-	        // ... gestire i casi di (, ), {, }, +, -, *, /, ; ... //
 
             case '(':
                 peek = ' ';
                 return Token.lpt;
 
-            
+
             case ')':
                 peek = ' ';
                 return Token.rpt;
@@ -81,75 +79,68 @@ public class Lexer {
 
 
 
-            //se ho un caso di && 
-            case '&':
-                readch(br);
-                if (peek == '&') {
-                    peek = ' ';
-                    return Word.and;
-                } else {
-                    System.err.println("Erroneous character" + " after & : "  + peek );
-                    return null;
-                }
-
-
-
-
-
-	        // ... gestire i casi di ||, <, >, <=, >=, ==, <>, = ... //
-
-
+            /**GESTISCO I CASI DI SINGOLI SIMBOLI E DELL'= E DEI < E > IN QUANTO DEVO DISAMBIGUARE SE SONO >= O <= */
             //questi sono automi del tipo 
 
             //                 s1       s2     __
             //       ---->Q0------>Q1-------->|Q2|
             //                                ----
 
+            
+            case '&':
+                readch(br);
+                if (peek == '&') {
+                    peek = ' ';
+                    return Word.and;
+                } else {
+                    System.err.println("Erroneous character" + " after & : " + peek);
+                    return null;
+                }
 
-            /**Caso di || */
+    
             case '|':
                 readch(br);
-                if(peek == '|'){
+                if (peek == '|') {
                     peek = ' ';
                     return Word.or;
-                }else{
-                    System.err.println("Erroneous character at or search" + " after & : "  + peek );
+                } else {
+                    System.err.println("Erroneous character at or search" + " after & : " + peek);
                     return null;
                 }
 
 
             case '<':
                 readch(br);
-                if(peek == ' '){
+                if (peek == ' ') {
                     peek = ' ';
                     return Word.lt;
-                }else if(peek == '>'){
+                } else if (peek == '>') {
                     peek = ' ';
                     return Word.ne;
-                }else if(peek == '='){
+                } else if (peek == '=') {
                     peek = ' ';
                     return Word.le;
                 }
-                
 
-            
+
+
             case '>':
                 readch(br);
-                if(peek == ' '){
+                if (peek == ' ') {
                     peek = ' ';
                     return Word.gt;
-                }else if(peek == '='){
+                } else if (peek == '=') {
                     peek = ' ';
                     return Word.ge;
                 }
 
-            
+
             case '=':
                 readch(br);
-                if(peek == ' '){
+                if (peek == ' ') {
                     peek = ' ';
                     return Token.assign;
-                }else if(peek == '='){
+                } else if (peek == '=') {
                     peek = ' ';
                     return Word.eq;
                 }
@@ -157,7 +148,7 @@ public class Lexer {
 
 
             //se ho finito e ho un -1 allora ritorno un tag eof e chiudo
-            case (char)-1:
+            case (char) - 1:
                 return new Token(Tag.EOF);
 
 
@@ -165,111 +156,119 @@ public class Lexer {
 
 
             default:
-                if (Character.isLetter(peek)) {
+            
+                /**GESTIONE DEI CARATTERI DI TESTO */
+                if (Character.isLetter(peek)) { 
 
-	            // ... gestire il caso degli identificatori e delle parole chiave //
-                
-                //ottengo la stringa
-                String lessema = "";
-                
-                do{
-                    
-                    if( (peek >='a' && peek <='z') || (peek >='A' && peek <= 'Z')  || Character.isDigit(peek)){
-
+                    //OTTENGO LA STRINGA FINO AL PROSSIMO CHAR NON AMMISSIBILE.
+                    String lessema = "";
+                    do {
                         lessema = lessema + peek; // ho un carattere nell'alfabeto quindi continuo
                         readch(br);
 
-                    }else{
-                        System.err.println("Error: found invalid character:" + peek ); //carattere non ammesso. esco
+                    } while (((peek >= 'a' && peek <= 'z') || (peek >= 'A' && peek <= 'Z') || Character.isDigit(peek)) && (peek != ' ') && (peek != (char) - 1)); //CONDIZIONE PER CUI UN SIMBOLO RIPETTA IL PATTERN DEL LESSEMA CHE CERCO
+
+
+
+                    //controllo che non sono uscito dal ciclo while a colpa di un carattere che non sta nel mio alfabeto:
+                    //qua praticamente passo tutti i simboli che sono nel mio alfabeto, eccetto quelli char e numerici, in quanto
+                    //se sono uscito dal ciclo prima, di sicuro non è un char o un numero che mi ha fatto uscire
+                    //occhio che devo mettere anche uno spazio in fondo per evitare che uno spazio mi faccia uscire
+                    //poi valuto con java se ho presente nella stringa il carattere peek. se non ce l'ho
+                    //il simbolo che mi ha fatto uscire non è nell'alfabeto
+                    //e quindi posso dire che ho un errore.
+                    //questa versione è più snella che controlare con tutti if
+
+                    if ("|&!(){}+-*/=;>< ".indexOf(peek) < 0) {
+                        System.err.println("Error: found invalid character:" + peek); //carattere non ammesso. esco
                         return null;
                     }
-                    
-                }while((peek != ' ' ) && (peek != (char) -1));
 
-                //devo fare uno switch per potere controllare che sia una keywoard oppure che sia solo un identificatore
-                //controllo che lessema non sia una keyword e nel caso ritorno il tag
 
-                switch(lessema){
 
-                    case "cond":
-                        peek = ' ';
-                        return Word.cond;
+                    //CONTROLLO CHE IL MIO LESSEMA NON SIA UNA KEYWORD E NEL CASO LO SIA RITORNO LA KEYWORD, ALTRIMENTI RITORNO UN IDENTIFICATORE
 
-                    case "when":
-                        peek = ' ';
-                        return Word.when;
+                    switch (lessema) {
 
-                    case "then": 
-                        peek = ' ';
-                        return Word.then;
+                        case "cond":
+                            peek = ' ';
+                            return Word.cond;
 
-                    case "else":
-                        peek = ' ';
-                        return Word.elsetok;
+                        case "when":
+                            peek = ' ';
+                            return Word.when;
 
-                    case "while":
-                        peek = ' ';
-                        return Word.whiletok;
+                        case "then":
+                            peek = ' ';
+                            return Word.then;
 
-                    case "do":
-                        peek = ' ';
-                        return Word.dotok;
+                        case "else":
+                            peek = ' ';
+                            return Word.elsetok;
 
-                    case "seq":
-                        peek = ' ';
-                        return Word.seq;
+                        case "while":
+                            peek = ' ';
+                            return Word.whiletok;
 
-                    case "print":
-                        peek = ' ';
-                        return Word.print;
+                        case "do":
+                            peek = ' ';
+                            return Word.dotok;
 
-                    case "read":
-                        peek = ' ';
-                        return Word.read;
-                        
+                        case "seq":
+                            peek = ' ';
+                            return Word.seq;
 
-                    default:  //ritorno idenificatore in quanto non è keyword del linguaggio
-                        peek = ' ';
-                        return new Word(Tag.ID, lessema);
-                }
+                        case "print":
+                            peek = ' ';
+                            return Word.print;
 
-                
+                        case "read":
+                            peek = ' ';
+                            return Word.read;
 
-                } else if (Character.isDigit(peek)) {
 
-                // ... gestire il caso dei numeri ... //
-                
-                String lessema = "";
+                        default:
+                            peek = ' ';
+                            return new Word(Tag.ID, lessema);
+                    }
 
-                do{
 
-                    if( (peek >='a' && peek <='z') || (peek >='A' && peek <= 'Z')  || Character.isDigit(peek)){
 
+                } else if (Character.isDigit(peek)) { /**GESTIONE DELLE COSTANTI NUMERICHE */
+
+
+                    String lessema = "";
+
+                    do{
                         lessema = lessema + peek; // ho un carattere nell'alfabeto quindi continuo
                         readch(br);
 
-                    }else{
-                        System.err.println("Error: found invalid number: " + peek ); //carattere non ammesso. esco
+                    } while (Character.isDigit(peek) && (peek != ' ') && (peek != (char) - 1));
+
+
+                    /**CONTROLLO CHE NON SONO USCITO PER UN SIBMOLO NON I N ALFABETO */
+                        //se peek non è una lettera                                       //se peek non sta nel nostro alfabeto
+                    if(!((peek >= 'a' && peek <= 'z') || (peek >= 'A' && peek <= 'Z')) &&  ("|&!(){}+-*/=;>< ".indexOf(peek) < 0)){
+                        System.err.println("Error: found invalid number: " + peek); //carattere non ammesso. esco
                         return null;
                     }
                     
-                }while((peek != ' ') && (peek != (char) -1));
-
-                return new NumberTok(Tag.NUM, lessema);
+                    //RITORNO UN NUOVO NUMERO
+                    return new NumberTok(Tag.NUM, lessema);
 
 
                 } else {
-                        System.err.println("Error: unknown error!: " + peek );
-                        return null;
+                    System.err.println("Error: unknown error!: " + peek);
+                    return null;
                 }
-         }
+        }
     }
 
 
 
 
 
-		
+
     public static void main(String[] args) {
         Lexer lex = new Lexer();
         String path = "test.txt"; // il percorso del file da leggere
@@ -288,7 +287,7 @@ public class Lexer {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }    
+        }
     }
 
 }
