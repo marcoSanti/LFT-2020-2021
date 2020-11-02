@@ -240,10 +240,10 @@ public class Lexer {
                     } while (Character.isDigit(peek) && (peek != ' ') && (peek != (char) - 1));
 
 
-                    /**CONTROLLO CHE NON SONO USCITO PER UN SIBMOLO NON I N ALFABETO */
-                        //se peek non è una lettera                  e anche                 //se peek non sta nel nostro alfabeto
-                    if(!((peek >= 'a' && peek <= 'z') || (peek >= 'A' && peek <= 'Z')) &&  ("|&!(){}+-*/=;>< ".indexOf(peek) < 0)){
-                        System.err.println("Error: found invalid number: " + peek); //carattere non ammesso. esco
+                    /**CONTROLLO CHE NON SONO USCITO PER UN SIBMOLO NON IN ALFABETO O PER UN NUMERO DAL FORMATO NON CORRETTO OVVERO NUMERO E CHAR */
+                        //se peek non è una lettera                                       //se peek non sta nel nostro alfabeto
+                    if(((peek >= 'a' && peek <= 'z') || (peek >= 'A' && peek <= 'Z')) &&  ("|&!(){}+-*/=;>< ".indexOf(peek) < 0)){
+                        System.err.println("Error: found invalid number: " + lessema + peek); //carattere non ammesso. esco
                         return null;
                     }
                     
