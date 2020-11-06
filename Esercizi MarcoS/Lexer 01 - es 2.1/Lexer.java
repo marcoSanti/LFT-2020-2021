@@ -173,8 +173,9 @@ public class Lexer {
                     //e quindi posso dire che ho un errore.
                     //questa versione è più snella che controlare con tutti if
 
-                    if (("|&!(){}+-*/=;>< ".indexOf(peek) < 0) && !(peek == ' ' || peek == '\t' || peek == '\n' || peek == '\r')){
-                        System.err.println("Error: found invalid character:" + peek); //carattere non ammesso. esco
+                    if (("|&!(){}+-*/=;><_ ".indexOf(peek) < 0) && !(peek == ' ' || peek == '\t' || peek == '\n' || peek == '\r' || peek == (char)-1)){  
+						System.err.println("Error: found invalid character:" + peek + " at line " + line); //carattere non ammesso. esco
+						System.err.println(String.format("%04x", (int) peek));
                         return null;
                     }
 
@@ -185,44 +186,44 @@ public class Lexer {
                     switch (lessema) {
 
                         case "cond":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.cond;
 
                         case "when":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.when;
 
                         case "then":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.then;
 
                         case "else":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.elsetok;
 
                         case "while":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.whiletok;
 
                         case "do":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.dotok;
 
                         case "seq":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.seq;
 
                         case "print":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.print;
 
                         case "read":
-                            peek = ' ';
+							if(peek != (char)-1) peek = ' ';//se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return Word.read;
 
 
                         default:
-                            peek = ' ';
+                            if(peek != (char)-1) peek = ' '; //se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return new Word(Tag.ID, lessema);
                     }
 

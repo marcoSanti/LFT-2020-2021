@@ -1,7 +1,14 @@
 while(x>0)do{pippo=5+3;}
-1234Ciao
-_ciao123
-_C_i_a_o____
-_0_ciao
-inlin
-wer
+1234Ciaopippo
+ninlisd
+fsd
+fsdfs
+dfs
+aaaa
+sdf
+bbbb
+sdfs
+vfdshvfjdhvfj
+//commenti inline
+ciao = 54 * 4 !
+ooo
