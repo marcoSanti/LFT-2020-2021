@@ -25,31 +25,52 @@ public class Lexer {
         }
 
 
+        //qua devo andare a controllare i  commenti sia in forma // che /**/
+        //IDEA: se ho un commento salto oltre e vado al successivo simbolo che non sia più parte di un commento
+        //devo controllare fuori dallo switch in quanto, non avendo altrimenti break, il codice entra in maniera
+        //indiscreta nel primo case senza ragione!
+        if(peek == '/'){
+                readch(br);
+                if(peek == '/'){ //commento nella stessa linea. leggo fino a che ho un \n o un EOF
+                    while(peek != (char) -1){
+                        if(peek == '\n'){ //ho trovato il fine linea. leggo il char successivo ed esco
+                            if(peek != (char) -1 )readch(br); //leggo il char successivo solo a condizione che non ho un eof 
+                            break;
+                        }
+                        readch(br); //commento inline. leggo fino a che non incontro nuova linea o fino a che non finisce il file
+                    } 
+                }else if(peek == '*'){ //ho trovato un commento multilinea
+                    boolean MLCommentClosed = false; //variabile che mi dice se ho un commento multilinea chiuso con successo. serve per verificare all'uscita del ciclo while se sono uscito per commento chiuso o per EOF trovato
+                    while(peek != (char) -1){ //ciclo fino a che non ho un EOF
+                        if(peek == '*'){ // se il char è una * potrei avere dopo un / ma non sono sicuro quindi controllo
+                            readch(br); //leggo il simbolo dopo
+                            if(peek == '/'){ 
+                                //commento multilinea finito
+                                //mi sposto al carattere successivo ed esco
+                                readch(br);
+                                MLCommentClosed = true; //setto che il commento multilina è stato chiuso correttamente
+                                break; //esco dal ciclo while
+                            }
+                        }else{//non ho il lo / dopo quindi devo legger char. non ho un singolo readch perchè devo evitare di leggere uno, entrare nel controllo / e leggere un altro per poi leggere un terzo: avrei saltato un simbolo quindi!
+                            readch(br); //carattere non trovato quindi leggo il carattere successivo
+                        }
+                    }
+                    if((peek == (char) -1) && !MLCommentClosed){ //se il simbolo finale è EOF e se non ho chiuso il commento mi arrabbio e segnalo che non ho chiuso il commento prima della fine del file
+                        System.out.println("Error: unescpected EOF: multiline comment not closed before EOF");
+                        return null;
+                    }
+                }else{
+                    peek = ' ';
+                    return Token.div;
+                }
+            }
+
+
         switch (peek) {
 
             /**GESTISCO I CASI DI SIMBOLI SINGOLI*/
 
-			//qua devo andare a controllare i  commenti sia in forma // che /**/
-			//devo controllare per prima cosa questo in quanto se ho un commento salto oltre e vado al successivo simbolo che non sia più parte di un commento
-            case '/':
-					readch(br);
-					if(peek == '/'){
-
-						while(peek != '\n' && peek != (char) -1) readch(br); //commento inline. leggo fino a che non incontro nuova linea o fino a che non finisce il file
-						if(peek == (char) -1) return new Token(Tag.EOF); //questo fixa il bug che se ho un (char) -1 mi va anche nel case '!' e mi ritorna un token inutile e scorretto
-						
-					}else if(peek == '*'){
-						//commenti multilinea
-
-					}else{
-						peek = ' ';
-                    	return Token.div;
-					}
-                    
-
-
-
-        
+			        
 			case '!':
                 peek = ' '; //questo peek lo metto per poter ritornare il giro successivo al while a inizio codice
                 return Token.not;

@@ -1,14 +1,5 @@
-while(x>0)do{pippo=5+3;}
-1234Ciaopippo
-ninlisd
-fsd
-fsdfs
-dfs
-aaaa
-sdf
-bbbb
-sdfs
-vfdshvfjdhvfj
-//commenti inline
-ciao = 54 * 4 !
-ooo
+prova
+//comment 
+prova
+1234
+/*multilinea*/
