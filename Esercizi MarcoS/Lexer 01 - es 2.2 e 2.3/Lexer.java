@@ -23,13 +23,15 @@ public class Lexer {
             if (peek == '\n') line++;
             readch(br);
         }
+      
 
+        switch (peek) {
 
-        //qua devo andare a controllare i  commenti sia in forma // che /**/
-        //IDEA: se ho un commento salto oltre e vado al successivo simbolo che non sia più parte di un commento
-        //devo controllare fuori dallo switch in quanto, non avendo altrimenti break, il codice entra in maniera
-        //indiscreta nel primo case senza ragione!
-        if(peek == '/'){
+            /**GESTISCO I CASI DI SIMBOLI SINGOLI*/
+
+            //qua devo andare a controllare i  commenti sia in forma // che /**/
+            //IDEA: se ho un commento salto oltre e vado al successivo simbolo che non sia più parte di un commento
+            case '/':
                 readch(br);
                 if(peek == '/'){ //commento nella stessa linea. leggo fino a che ho un \n o un EOF
                     while(peek != (char) -1){
@@ -40,7 +42,7 @@ public class Lexer {
                         readch(br); //commento inline. leggo fino a che non incontro nuova linea o fino a che non finisce il file
                     } 
                 }else if(peek == '*'){ //ho trovato un commento multilinea
-                    boolean MLCommentClosed = false; //variabile che mi dice se ho un commento multilinea chiuso con successo. serve per verificare all'uscita del ciclo while se sono uscito per commento chiuso o per EOF trovato
+                    boolean mLCommentClosed = false; //variabile che mi dice se ho un commento multilinea chiuso con successo. serve per verificare all'uscita del ciclo while se sono uscito per commento chiuso o per EOF trovato
                     while(peek != (char) -1){ //ciclo fino a che non ho un EOF
                         if(peek == '*'){ // se il char è una * potrei avere dopo un / ma non sono sicuro quindi controllo
                             readch(br); //leggo il simbolo dopo
@@ -48,14 +50,14 @@ public class Lexer {
                                 //commento multilinea finito
                                 //mi sposto al carattere successivo ed esco
                                 readch(br);
-                                MLCommentClosed = true; //setto che il commento multilina è stato chiuso correttamente
+                                mLCommentClosed = true; //setto che il commento multilina è stato chiuso correttamente
                                 break; //esco dal ciclo while
                             }
                         }else{//non ho il lo / dopo quindi devo legger char. non ho un singolo readch perchè devo evitare di leggere uno, entrare nel controllo / e leggere un altro per poi leggere un terzo: avrei saltato un simbolo quindi!
                             readch(br); //carattere non trovato quindi leggo il carattere successivo
                         }
                     }
-                    if((peek == (char) -1) && !MLCommentClosed){ //se il simbolo finale è EOF e se non ho chiuso il commento mi arrabbio e segnalo che non ho chiuso il commento prima della fine del file
+                    if((peek == (char) -1) && !mLCommentClosed){ //se il simbolo finale è EOF e se non ho chiuso il commento mi arrabbio e segnalo che non ho chiuso il commento prima della fine del file
                         System.out.println("Error: unescpected EOF: multiline comment not closed before EOF");
                         return null;
                     }
@@ -63,12 +65,10 @@ public class Lexer {
                     peek = ' ';
                     return Token.div;
                 }
-            }
+                return lexical_scan(br); // se arrivo in questo punto, riavvio la scansione lessicale, dopo avere modificaro il valore in cima a peek!
+                                        //se non riavvio la scansione ma lascio continuare la stessa, mancado un break o un return, entro a caso in uno switch quindi non va bene!
 
 
-        switch (peek) {
-
-            /**GESTISCO I CASI DI SIMBOLI SINGOLI*/
 
 			        
 			case '!':
@@ -109,7 +109,6 @@ public class Lexer {
             case ';':
                 peek = ' ';
                 return Token.semicolon;
-
 
 
 
@@ -323,9 +322,8 @@ public class Lexer {
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             Token tok;
-
+            do{
             //continuo a leggere quello che entra nel ciclo
-            do {
                 tok = lex.lexical_scan(br);
                 System.out.println("Scan: " + tok);
             } while (tok != null && tok.tag != Tag.EOF);
