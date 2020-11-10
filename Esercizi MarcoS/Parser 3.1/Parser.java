@@ -78,11 +78,11 @@ public class Parser {
                 exprp();
             
             case ')':
-                match(')');
+                
                 break;
             
-            case '$':
-                match('$');
+            case -1:
+                
                 break;
 
             default:
@@ -127,19 +127,19 @@ public class Parser {
                 break;
             
             case ')':
-                match(')');
+                
                 break;
             
-            case '$':
-                match('$');
+            case -1:
+                
                 break;
 
             case '+':
-                match('+');
+                
                 break;
 
             case '-':
-                match('-');
+               
                 break;
 
             default:
@@ -155,6 +155,7 @@ public class Parser {
             case '(':
                 match('(');
                 expr();
+                match(')');
                 break;
 
             case 256:
@@ -162,7 +163,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error fact. token fount: " + look.tag);
+                error("Parse error fact.");
         }
     }
 
