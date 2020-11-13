@@ -1,5 +1,2 @@
-prova
-//comment 
-prova
-1234
-/*multilinea*/
+viari/*ciao*/
+a_/

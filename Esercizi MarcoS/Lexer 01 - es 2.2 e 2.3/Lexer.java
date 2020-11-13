@@ -10,6 +10,7 @@ public class Lexer {
     private void readch(BufferedReader br) {
         try {
             peek = (char) br.read(); //leggo un char e lo metto in peek
+        
         } catch (IOException exc) {
             peek = (char) - 1; // ERROR
         }
@@ -24,7 +25,7 @@ public class Lexer {
             readch(br);
         }
       
-
+        
         switch (peek) {
 
             /**GESTISCO I CASI DI SIMBOLI SINGOLI*/
@@ -281,7 +282,6 @@ public class Lexer {
 
 
                         default:
-                            if(peek != (char)-1) peek = ' '; //se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return new Word(Tag.ID, lessema);
                     }
 

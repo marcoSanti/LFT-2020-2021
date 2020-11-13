@@ -223,7 +223,6 @@ public class Lexer {
 
 
                         default:
-                            if(peek != (char)-1) peek = ' '; //se non ho un fine file nel peek allora lo imposto altrimenti mi fermo in quanto altrimenti vado a leggere oltre il file!
                             return new Word(Tag.ID, lessema);
                     }
 
