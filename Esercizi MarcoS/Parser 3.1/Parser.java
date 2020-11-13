@@ -25,6 +25,8 @@ public class Parser {
 
 
     public void start() {
+        //qua lascio così per rilevare prima potenziali errori di sintassi come detto dal professore Padovani
+        /*OVVERO SE TROVO UN CARATTERE CHE NON PUO ESSERE, EVITO DI CREARE UN ALTRO COSTRUTTO NELLO STACK MA DO SUBITO ERRORE. MIGLIORA EFFICENZA*/
         switch(look.tag){
             case '(':
                 expr();
@@ -36,8 +38,8 @@ public class Parser {
                 match(Tag.EOF);
                 break;
 
-            default:
-                error("Parse error start");
+            default: 
+                error("Parse error start at line:" + lex.line);
         }
         
 
@@ -58,7 +60,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error expr");
+                error("Parse error expr at line:" + lex.line);
         }
     }
 
@@ -86,7 +88,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error exprp");
+                error("Parse error exprp at line:" + lex.line);
 
             
         }
@@ -107,7 +109,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error term");
+                error("Parse error term at line:" + lex.line);
         }
     }
 
@@ -143,7 +145,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse Error termp");
+                error("Parse Error termp at line:" + lex.line);
             
             
         }
@@ -163,7 +165,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error fact.");
+                error("Parse error fact. at line:" + lex.line);
         }
     }
 
