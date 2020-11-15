@@ -14,7 +14,7 @@ public class Parser {
         System.out.println("token = " + look);
     }
     void error(String s) {
-        throw new Error("near line " + lex.line + ": " + s);
+        throw new Error(s);
     }
     void match(int t) {
         if (look.tag == t) {
@@ -33,7 +33,7 @@ public class Parser {
                 match(Tag.EOF);
                 break;
 
-            case 256:
+            case Tag.NUM:
                 expr();
                 match(Tag.EOF);
                 break;
@@ -54,7 +54,7 @@ public class Parser {
                 exprp();
                 break;
 
-            case 256:
+            case Tag.NUM:
                 term();
                 exprp();
                 break;
@@ -103,7 +103,7 @@ public class Parser {
                 termp();
                 break;
 
-            case 256:
+            case Tag.NUM:
                 fact();
                 termp();
                 break;
@@ -160,8 +160,8 @@ public class Parser {
                 match(')');
                 break;
 
-            case 256:
-                match(256);
+            case Tag.NUM:
+                match(Tag.NUM);
                 break;
 
             default:
