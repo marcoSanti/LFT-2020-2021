@@ -85,7 +85,8 @@ public class Parser {
 
         switch(look.tag){
 
-            case Tag.ID:
+            case '=':
+                match('=');
                 match(Tag.ID);
                 expr();
                 break;

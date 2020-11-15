@@ -3,8 +3,22 @@
     (print verooo)
     (else (print falsoooo))
 )
-*/
+
 
 (while(== 5 3) 
     (do(read pippo))
+)
+
+
+
+(= a 5) //test assegnazione con id. questo equivale a a = 5
+*/
+
+//test complesso
+
+(
+    cond(>= c 20)
+    (= a 3)
+    (else (= b 5))
+    print c
 )
