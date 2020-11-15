@@ -24,7 +24,7 @@ public class Parser {
 
 
 
-    public void start() {
+    private void start() {
         //qua lascio così per rilevare prima potenziali errori di sintassi come detto dal professore Padovani
         /*OVVERO SE TROVO UN CARATTERE CHE NON PUO ESSERE, EVITO DI CREARE UN ALTRO COSTRUTTO NELLO STACK MA DO SUBITO ERRORE. MIGLIORA EFFICENZA*/
         switch(look.tag){

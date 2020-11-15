@@ -1,1 +1,10 @@
--(1)+(2)-(3)
+/*
+(cond(> 12 5) 
+    (print verooo)
+    (else (print falsoooo))
+)
+*/
+
+(while(== 5 3) 
+    (do(read pippo))
+)

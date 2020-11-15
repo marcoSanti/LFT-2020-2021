@@ -7,24 +7,24 @@ public class Parser {
     public Parser(Lexer l, BufferedReader br) {
         lex = l;
         pbr = br;
-        prog();
+        move();
     }
     void move() {
         look = lex.lexical_scan(pbr);
         System.out.println("token = " + look);
     }
     void error(String s) {
-        throw new Error("near line " + lex.line + ": " + s);
+        throw new Error(s);
     }
     void match(int t) {
         if (look.tag == t) {
             if (look.tag != Tag.EOF) move();
-        } else error("syntax error");
+        } else error("syntax error at line: " + Lexer.line + "\n token: " + t + " does not match expected token: " + look.tag);
     }
 
 
-    public void prog(){
-
+    private void prog(){
+      
         switch(look.tag){
             case '(':
                 stat();
@@ -36,7 +36,7 @@ public class Parser {
         }
     }
 
-    public void statlist(){
+    private void statlist(){
         switch(look.tag){
             case '(':
                 stat();
@@ -49,7 +49,7 @@ public class Parser {
     }
 
 
-    public void statlistp(){
+    private void statlistp(){
        switch(look.tag){
         case '(':
             stat();
@@ -66,7 +66,7 @@ public class Parser {
         
     }
 
-    public void stat(){
+    private void stat(){
         switch(look.tag){
             case '(':
                 match(Token.lpt.tag);
@@ -81,7 +81,7 @@ public class Parser {
 
 
     //VERIFICARE PERCHè NON SONO SICURO CHE FUNZIONI BENE!
-    public void statp(){
+    private void statp(){
 
         switch(look.tag){
 
@@ -128,7 +128,7 @@ public class Parser {
 
 
 
-    public void elseopt(){
+    private void elseopt(){
 
         switch(look.tag){
             case '(':
@@ -147,7 +147,7 @@ public class Parser {
 
     }
 
-    public void bexpr(){
+    private void bexpr(){
         switch(look.tag){
             case '(':
                 match('(');
@@ -161,7 +161,7 @@ public class Parser {
 
     }
 
-    public void bexprp(){
+    private void bexprp(){
         switch(look.tag){
 
             case Tag.RELOP:
@@ -176,7 +176,7 @@ public class Parser {
 
     }
 
-    public void expr(){
+    private void expr(){
 
         switch(look.tag){
             case Tag.NUM:
@@ -199,7 +199,7 @@ public class Parser {
 
     }
 
-    public void exprp(){
+    private void exprp(){
 
         switch(look.tag){
 
@@ -231,7 +231,7 @@ public class Parser {
 
     }
 
-    public void exprlist(){
+    private void exprlist(){
         switch(look.tag){
             case Tag.NUM:
                 expr();
@@ -253,7 +253,7 @@ public class Parser {
         }
     }
 
-    public void exprlistp(){
+    private void exprlistp(){
 
         switch(look.tag){
             case Tag.NUM:
@@ -286,8 +286,10 @@ public class Parser {
     public static void main(String[] args) {
         Lexer lex = new Lexer();
         String path = "test.txt"; // il percorso del file da leggere
+        
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
+           
             Parser parser = new Parser(lex, br);
             parser.prog();
             System.out.println("Input OK");
