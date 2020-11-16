@@ -23,263 +23,317 @@ public class Parser {
     }
 
 
-    private void prog(){
-      
-        switch(look.tag){
-            case '(':
-                stat();
-                match(Tag.EOF);
-                break;
+  private void prog(){
+      switch(look.tag){
 
-            default: 
-                error("Error on prog status at line: " + Lexer.line);
-        }
-    }
+        case '=':
+            statlist();
+            match(Tag.EOF);
+            break;
 
-    private void statlist(){
-        switch(look.tag){
-            case '(':
-                stat();
-                statlistp();
-                break;
+        case Tag.PRINT:
+            statlist();
+            match(Tag.EOF);
+            break;
+        
+        case Tag.READ:
+            statlist();
+            match(Tag.EOF);
+            break;
 
-            default:
-                error("Error on statlist at line: " + Lexer.line);
-        }
-    }
+        case Tag.COND:
+            statlist();
+            match(Tag.EOF);
+            break;
 
+        case Tag.WHILE:
+            statlist();
+            match(Tag.EOF);
+            break;
+        
+        case '{':
+            statlist();
+            match(Tag.EOF);
+            break;
 
-    private void statlistp(){
-       switch(look.tag){
-        case '(':
+        default : error("Error on prog() at line: " + lex.line);
+      }
+  }
+
+  private void statlist(){
+    switch(look.tag){
+
+        case '=':
+            match('=');
             stat();
             statlistp();
             break;
 
-        case ')':
+        case Tag.PRINT:
+            match(Tag.PRINT);
+            stat();
+            statlistp();
+            break;
+        
+        case Tag.READ:
+            match(Tag.READ);
+            stat();
+            statlistp();
             break;
 
-        default:
-            error("Error on statlistp at line: " + Lexer.line);
-       }
+        case Tag.COND:
+            match(Tag.COND);
+            stat();
+            statlistp();
+            break;
 
+        case Tag.WHILE:
+            match(Tag.WHILE);
+            stat();
+            statlistp();
+            break;
         
+        case '{':
+            match('{');
+            stat();
+            statlistp();
+            break;
+
+        default : error("Error on statlist() at line: " + lex.line);
+      }
+  }
+
+  private void statlistp(){
+      switch(look.tag){
+          case '}':
+            break;
+
+        case Tag.EOF:
+            break;
+
+        case ';':
+            match(';');
+            stat();
+            statlistp();
+            break;
+
+        default: error("Error on statlistp() at line: " + lex.line);
+      }
+  }
+
+  private void stat(){
+      switch(look.tag){
+          case '=':
+            match('=');
+            match(Tag.ID);
+            expr();
+            break;
+
+        case Tag.PRINT:
+            match(Tag.PRINT);
+            match('(');
+            exprlist();
+            match(')');
+            break;
+
+        case Tag.READ:
+            match(Tag.READ);
+            match('(');
+            match(Tag.ID);
+            match(')');
+            break;
+
+        case Tag.COND:
+            match(Tag.COND);
+            whenlist();
+            match(Tag.ELSE);
+            stat();
+            break;
+
+        case Tag.WHILE:
+            match(Tag.WHILE);
+            match('(');
+            bexpr();
+            match(')');
+            stat();
+            break;
+
+        case '{':  
+            match('{');
+            statlist();
+            match('}');
+            break;
+
+        default : error("Error on stat() at line: "+ lex.line);
+      }
+  }
+
+  private void whenlist() {
+    switch(look.tag){
+        case Tag.WHEN:
+            whenitem();
+            whenlistp();
+            break;
+
+        default: error("Error on whenlist() at line: "+lex.line);
     }
+  }
 
-    private void stat(){
-        switch(look.tag){
-            case '(':
-                match(Token.lpt.tag);
-                statp();
-                match(Token.rpt.tag);
-                break;
+  private void whenlistp() {
+      switch(look.tag){
+          case Tag.WHEN:
+            whenitem();
+            whenlistp();
+            break;
 
-            default:
-                error("Error on stat at line: " + Lexer.line);
-        }
+        case Tag.ELSE:
+            break;
+
+        default: error("Error on whenlistp() at line: " + lex.line);
+      }
+  }
+
+  private void whenitem(){
+      switch(look.tag){
+          case Tag.WHEN:
+            match(Tag.WHEN);
+            match('(');
+            bexpr();
+            match(')');
+            match(Tag.DO);
+            stat();
+            break;
+
+        default: error("Error on whenitem() at line: " + lex.line);
+      }
+  }
+
+  private void bexpr() {
+      switch(look.tag){
+          case Tag.RELOP:
+            match(Tag.RELOP);
+            expr();
+            expr();
+            break;
+
+        default: error("Error on bexpr() at line: " + lex.line);
+      }
+  }
+
+  private void expr() {
+      switch(look.tag){
+          case '+':
+            match('+');
+            match('(');
+            exprlist();
+            match(')');
+            break;
+
+        case '-':
+            match('-');
+            expr();
+            expr();
+            break;
+
+        case '*':
+            match('*');
+            match('(');
+            exprlist();
+            match(')');
+            break;
+
+        case '/':
+            match('/');
+            expr();
+            expr();
+            break;
+
+        case Tag.NUM:
+            match(Tag.NUM);
+            break;
+
+        case Tag.ID:
+            match(Tag.ID);
+            break;
+
+        default: error("Error on expr() at line: " + lex.line);
+      }
+  }
+
+  private void exprlist() {
+      switch(look.tag){
+          case '+':
+            expr();
+            exprlist();
+            break;
+
+        case '-':
+            expr();
+            exprlist();
+            break;
+
+        case '*':
+            expr();
+            exprlist();
+            break;
+
+        case '/':
+            expr();
+            exprlist();
+            break;
+
+        case Tag.NUM:
+            expr();
+            exprlist();
+            break;
+
+        case Tag.ID:
+            expr();
+            exprlist();
+            break;
+
+        default: error("Error on exprlist() at line: " + lex.line);
+      }
+  }
+
+  private void exprlistp(){
+    switch(look.tag){
+        case '+':
+          expr();
+          exprlist();
+          break;
+
+      case '-':
+          expr();
+          exprlist();
+          break;
+
+      case '*':
+          expr();
+          exprlist();
+          break;
+
+      case '/':
+          expr();
+          exprlist();
+          break;
+
+      case Tag.NUM:
+          expr();
+          exprlist();
+          break;
+
+      case Tag.ID:
+          expr();
+          exprlist();
+          break;
+
+      case ')':
+        break;
+
+      default: error("Error on exprlist() at line: " + lex.line);
     }
-
-
-    //VERIFICARE PERCHè NON SONO SICURO CHE FUNZIONI BENE!
-    private void statp(){
-
-        switch(look.tag){
-
-            case '=':
-                match('=');
-                match(Tag.ID);
-                expr();
-                break;
-
-            case Tag.COND:
-                match(Tag.COND);
-                bexpr();
-                stat();
-                elseopt();
-                break;
-            
-            case Tag.WHILE:
-                match(Tag.WHILE);
-                bexpr();
-                stat();
-                break;
-
-            case Tag.DO:
-                match(Tag.DO);
-                statlist();
-                break;
-
-            case Tag.PRINT:
-                match(Tag.PRINT);
-                exprlist();
-                break;
-
-            case Tag.READ:
-                match(Tag.READ);
-                match(Tag.ID);
-                break;
-
-
-            default:
-                error("Error on statp at line: " + Lexer.line);
-        }
-
-    }
-
-
-
-
-    private void elseopt(){
-
-        switch(look.tag){
-            case '(':
-                match('(');
-                match(Tag.ELSE);
-                stat();
-                match(')');
-                break;
-
-            case ')':
-                break;
-
-            default:
-                error("Error on elseopt at line: " + Lexer.line);
-        }
-
-    }
-
-    private void bexpr(){
-        switch(look.tag){
-            case '(':
-                match('(');
-                bexprp();
-                match(')');
-                break;
-
-            default:
-                error("Error on bexpr at line: " + Lexer.line);
-        }
-
-    }
-
-    private void bexprp(){
-        switch(look.tag){
-
-            case Tag.RELOP:
-                match(Tag.RELOP);
-                expr();
-                expr();
-                break;
-
-            default:
-                error("Error on bexprp at line: " + Lexer.line);
-        }
-
-    }
-
-    private void expr(){
-
-        switch(look.tag){
-            case Tag.NUM:
-                match(Tag.NUM);
-                break;
-
-            case Tag.ID:
-                match(Tag.ID);
-                break;
-
-            case '(':
-                match('(');
-                exprp();
-                match(')');
-                break;
-
-            default: 
-                error("Error at expr at line: " + Lexer.line);
-        }
-
-    }
-
-    private void exprp(){
-
-        switch(look.tag){
-
-            case '+':
-                match('+');
-                exprlist();
-                break;
-
-            case '-':
-                match('-');
-                expr();
-                expr();
-                break;
-
-            case '*':
-                match('*');
-                exprlist();
-                break;
-
-            case '/':
-                match('/');
-                expr();
-                expr();
-                break;
-
-            default:
-                error("Error on exprp at line: " + Lexer.line);
-        }
-
-    }
-
-    private void exprlist(){
-        switch(look.tag){
-            case Tag.NUM:
-                expr();
-                exprlistp();
-                break;
-
-            case Tag.ID:
-                expr();
-                exprlistp();
-                break;
-
-            case '(':
-                expr();
-                exprlistp();
-                break;
-
-            default:
-                error("Error on exprlist at line: " + Lexer.line);
-        }
-    }
-
-    private void exprlistp(){
-
-        switch(look.tag){
-            case Tag.NUM:
-                expr();
-                exprlistp();
-                break;
-
-            case Tag.ID:
-                expr();
-                exprlistp();
-                break;
-
-            case '(':
-                expr();
-                exprlistp();
-                break;
-
-            case ')':
-                break;
-
-            default:
-                error("Error on exprlistp at line: " + Lexer.line);
-        }
-
-    }
+  }
 
 
 
