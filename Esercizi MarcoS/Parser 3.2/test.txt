@@ -1,24 +1,8 @@
-/*
-(cond(> 12 5) 
-    (print verooo)
-    (else (print falsoooo))
-)
-
-
-(while(== 5 3) 
-    (do(read pippo))
-)
-
-
-
-(= a 5) //test assegnazione con id. questo equivale a a = 5
-*/
-
-//test complesso
-
-(
-    cond(>= c 20)
-    (= a 3)
-    (else (= b 5))
-    print c
-)
+read(x);
+read(y);
+cond
+when(> x y) do print(x) else print(y);
+while(> x 0) {
+=x -x 1;
+print(x)
+}

@@ -105,40 +105,36 @@ public class Lexer {
 
             case '<':
                 readch(br);
-                if (peek == ' ') {
-                    peek = ' ';
-                    return Word.lt;
-                } else if (peek == '>') {
+                if (peek == '>') {
                     peek = ' ';
                     return Word.ne;
                 } else if (peek == '=') {
                     peek = ' ';
                     return Word.le;
+                }else{
+                    return Word.lt;
                 }
 
 
 
             case '>':
                 readch(br);
-                if (peek == ' ') {
-                    peek = ' ';
-                    return Word.gt;
-                } else if (peek == '=') {
+                if (peek == '=') {
                     peek = ' ';
                     return Word.ge;
+                }else{
+                    return Word.gt;
                 }
 
 
             case '=':
                 readch(br);
-                if (peek == ' ') {
-                    peek = ' ';
-                    return Token.assign;
-                } else if (peek == '=') {
+                if (peek == '=') {
                     peek = ' ';
                     return Word.eq;
+                }else{
+                    return Token.assign;
                 }
-
 
 
             //se ho finito e ho un -1 allora ritorno un tag eof e chiudo

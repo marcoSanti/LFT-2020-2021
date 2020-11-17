@@ -56,7 +56,7 @@ public class Parser {
             match(Tag.EOF);
             break;
 
-        default : error("Error on prog() at line: " + lex.line);
+        default : error("Error on prog() at line: " + lex.line  + ". Found: " + look.tag);
       }
   }
 
@@ -64,42 +64,36 @@ public class Parser {
     switch(look.tag){
 
         case '=':
-            match('=');
             stat();
             statlistp();
             break;
 
         case Tag.PRINT:
-            match(Tag.PRINT);
             stat();
             statlistp();
             break;
         
         case Tag.READ:
-            match(Tag.READ);
             stat();
             statlistp();
             break;
 
         case Tag.COND:
-            match(Tag.COND);
             stat();
             statlistp();
             break;
 
         case Tag.WHILE:
-            match(Tag.WHILE);
             stat();
             statlistp();
             break;
         
         case '{':
-            match('{');
             stat();
             statlistp();
             break;
 
-        default : error("Error on statlist() at line: " + lex.line);
+        default : error("Error on statlist() at line: " + lex.line  + ". Found: " + look.tag);
       }
   }
 
@@ -117,7 +111,7 @@ public class Parser {
             statlistp();
             break;
 
-        default: error("Error on statlistp() at line: " + lex.line);
+        default: error("Error on statlistp() at line: " + lex.line  + ". Found: " + look.tag);
       }
   }
 
@@ -164,7 +158,9 @@ public class Parser {
             match('}');
             break;
 
-        default : error("Error on stat() at line: "+ lex.line);
+
+
+        default : error("Error on stat() at line: "+ lex.line + ". Found: " + look.tag);
       }
   }
 
@@ -175,7 +171,7 @@ public class Parser {
             whenlistp();
             break;
 
-        default: error("Error on whenlist() at line: "+lex.line);
+        default: error("Error on whenlist() at line: "+lex.line+ ". Found: " + look.tag);
     }
   }
 
@@ -189,7 +185,7 @@ public class Parser {
         case Tag.ELSE:
             break;
 
-        default: error("Error on whenlistp() at line: " + lex.line);
+        default: error("Error on whenlistp() at line: " + lex.line+ ". Found: " + look.tag);
       }
   }
 
@@ -204,7 +200,7 @@ public class Parser {
             stat();
             break;
 
-        default: error("Error on whenitem() at line: " + lex.line);
+        default: error("Error on whenitem() at line: " + lex.line+ ". Found: " + look.tag);
       }
   }
 
@@ -216,7 +212,7 @@ public class Parser {
             expr();
             break;
 
-        default: error("Error on bexpr() at line: " + lex.line);
+        default: error("Error on bexpr() at line: " + lex.line+ ". Found: " + look.tag);
       }
   }
 
@@ -256,7 +252,7 @@ public class Parser {
             match(Tag.ID);
             break;
 
-        default: error("Error on expr() at line: " + lex.line);
+        default: error("Error on expr() at line: " + lex.line+ ". Found: " + look.tag);
       }
   }
 
@@ -264,35 +260,35 @@ public class Parser {
       switch(look.tag){
           case '+':
             expr();
-            exprlist();
+            exprlistp();
             break;
 
         case '-':
             expr();
-            exprlist();
+            exprlistp();
             break;
 
         case '*':
             expr();
-            exprlist();
+            exprlistp();
             break;
 
         case '/':
             expr();
-            exprlist();
+            exprlistp();
             break;
 
         case Tag.NUM:
             expr();
-            exprlist();
+            exprlistp();
             break;
 
         case Tag.ID:
             expr();
-            exprlist();
+            exprlistp();
             break;
 
-        default: error("Error on exprlist() at line: " + lex.line);
+        default: error("Error on exprlist() at line: " + lex.line+ ". Found: " + look.tag);
       }
   }
 
@@ -331,7 +327,7 @@ public class Parser {
       case ')':
         break;
 
-      default: error("Error on exprlist() at line: " + lex.line);
+      default: error("Error on exprlist() at line: " + lex.line+ ". Found: " + look.tag);
     }
   }
 
