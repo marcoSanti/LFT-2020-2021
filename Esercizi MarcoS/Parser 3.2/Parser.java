@@ -60,9 +60,7 @@ public class Parser {
 
   private void statlistp(){
       switch(look.tag){
-          case '}':
-            break;
-
+        case '}':
         case Tag.EOF:
             break;
 
@@ -242,7 +240,7 @@ public class Parser {
       case Tag.NUM:
       case Tag.ID:
           expr();
-          exprlist();
+          exprlistp();
           break;
 
       case ')':
