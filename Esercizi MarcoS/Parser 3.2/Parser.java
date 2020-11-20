@@ -22,7 +22,7 @@ public class Parser {
         } else error("syntax error at line: " + Lexer.line + "\n token: " + t + " does not match expected token: " + look.tag);
     }
 
-  
+
 
   private void prog(){
       switch(look.tag){
