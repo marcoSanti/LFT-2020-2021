@@ -28,11 +28,7 @@ public class Parser {
         //qua lascio così per rilevare prima potenziali errori di sintassi come detto dal professore Padovani
         /*OVVERO SE TROVO UN CARATTERE CHE NON PUO ESSERE, EVITO DI CREARE UN ALTRO COSTRUTTO NELLO STACK MA DO SUBITO ERRORE. MIGLIORA EFFICENZA*/
         switch(look.tag){
-            case '(':
-                expr();
-                match(Tag.EOF);
-                break;
-
+            case '(': //non serve un corpo in quanto viene eseguito lo stesso codice e in quanto sarebbe come fare case Tag.NUM || '('
             case Tag.NUM:
                 expr();
                 match(Tag.EOF);
@@ -50,10 +46,6 @@ public class Parser {
     private void expr() {
         switch(look.tag){
             case '(':
-                term();
-                exprp();
-                break;
-
             case Tag.NUM:
                 term();
                 exprp();
@@ -80,11 +72,9 @@ public class Parser {
                 exprp();
             
             case ')':
-                
                 break;
             
             case -1:
-                
                 break;
 
             default:
@@ -99,10 +89,6 @@ public class Parser {
     private void term() {
         switch(look.tag){
             case '(':
-                fact();
-                termp();
-                break;
-
             case Tag.NUM:
                 fact();
                 termp();

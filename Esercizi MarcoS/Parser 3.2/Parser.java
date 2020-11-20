@@ -22,35 +22,16 @@ public class Parser {
         } else error("syntax error at line: " + Lexer.line + "\n token: " + t + " does not match expected token: " + look.tag);
     }
 
+  
 
   private void prog(){
       switch(look.tag){
-
+        //facendo così rendo il codice più leggibile e meno esteso. in pratica è come se mettessi in or tutti i case!
         case '=':
-            statlist();
-            match(Tag.EOF);
-            break;
-
         case Tag.PRINT:
-            statlist();
-            match(Tag.EOF);
-            break;
-        
         case Tag.READ:
-            statlist();
-            match(Tag.EOF);
-            break;
-
         case Tag.COND:
-            statlist();
-            match(Tag.EOF);
-            break;
-
         case Tag.WHILE:
-            statlist();
-            match(Tag.EOF);
-            break;
-        
         case '{':
             statlist();
             match(Tag.EOF);
@@ -64,30 +45,10 @@ public class Parser {
     switch(look.tag){
 
         case '=':
-            stat();
-            statlistp();
-            break;
-
         case Tag.PRINT:
-            stat();
-            statlistp();
-            break;
-        
         case Tag.READ:
-            stat();
-            statlistp();
-            break;
-
         case Tag.COND:
-            stat();
-            statlistp();
-            break;
-
         case Tag.WHILE:
-            stat();
-            statlistp();
-            break;
-        
         case '{':
             stat();
             statlistp();
@@ -152,7 +113,7 @@ public class Parser {
             stat();
             break;
 
-        case '{':  
+        case '{':
             match('{');
             statlist();
             match('}');
@@ -258,31 +219,11 @@ public class Parser {
 
   private void exprlist() {
       switch(look.tag){
-          case '+':
-            expr();
-            exprlistp();
-            break;
-
+        case '+':
         case '-':
-            expr();
-            exprlistp();
-            break;
-
         case '*':
-            expr();
-            exprlistp();
-            break;
-
         case '/':
-            expr();
-            exprlistp();
-            break;
-
         case Tag.NUM:
-            expr();
-            exprlistp();
-            break;
-
         case Tag.ID:
             expr();
             exprlistp();
@@ -294,31 +235,11 @@ public class Parser {
 
   private void exprlistp(){
     switch(look.tag){
-        case '+':
-          expr();
-          exprlist();
-          break;
-
+      case '+':
       case '-':
-          expr();
-          exprlist();
-          break;
-
       case '*':
-          expr();
-          exprlist();
-          break;
-
       case '/':
-          expr();
-          exprlist();
-          break;
-
       case Tag.NUM:
-          expr();
-          exprlist();
-          break;
-
       case Tag.ID:
           expr();
           exprlist();
@@ -337,10 +258,10 @@ public class Parser {
     public static void main(String[] args) {
         Lexer lex = new Lexer();
         String path = "test.txt"; // il percorso del file da leggere
-        
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
-           
+
             Parser parser = new Parser(lex, br);
             parser.prog();
             System.out.println("Input OK");
