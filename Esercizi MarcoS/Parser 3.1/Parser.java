@@ -72,8 +72,6 @@ public class Parser {
                 exprp();
             
             case ')':
-                break;
-            
             case -1:
                 break;
 
@@ -115,19 +113,9 @@ public class Parser {
                 break;
             
             case ')':
-                
-                break;
-            
             case -1:
-                
-                break;
-
             case '+':
-                
-                break;
-
             case '-':
-               
                 break;
 
             default:
