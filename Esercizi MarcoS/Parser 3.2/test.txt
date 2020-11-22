@@ -1,4 +1,4 @@
-
+/*
 read(x);
 read(y);
 print(1 +(2 3 4));
@@ -12,7 +12,7 @@ cond
 read(x);
 read(y);
 read(z);
-cond 
+cond
 	when (> x y) do
 		cond when (> x z) do print(x) else print(z)
 	else
@@ -39,3 +39,22 @@ while (<= i n){
 	= i +(i 1)
 };
 print(f)
+*/
+
+
+
+  {read(var) } ;
+  cond  when( ==  var2  * ( 10 )) do  read(var) when( ==  10  -  var2  10 ) do  cond  when( ==  var1
+  + ( var1 )) do  cond  when( ==  * ( + ( var1 )) + ( 10 )) do { while( ==  var1  var1 ) = var  -  var2
+   -  -  * ( 10 ) var2  + ( var2 ) }  else  read(var) when( ==  var2  + ( var1 )) do  read(var) when( ==
+   * ( + ( * ( + ( 10 )))) -  + ( -  -  var1  var2  + ( 10 )) -  10  var1 ) do  while( ==  10  var1 ) while( ==
+   var2  * ( * ( var2 ))) print( -  10  * ( var1 ))  else  cond  when( ==  * ( * ( var1 )) var1 ) do
+   print( var1 )  else  while( ==  -  var2  * ( 10 ) 10 ) = var  var1   else  = var  var1  ;  cond  when( ==  * ( 10 )
+  + ( var1 )) do  read(var) when( ==  var2  * ( * ( var2 ))) do  cond  when( ==  10  -  + ( var2 )
+  var1 ) do  cond  when( ==  var2  var2 ) do  print( * ( 10 ))  else  cond  when( ==  var2  var2 )
+  do  read(var) when( ==  + ( 10 ) * ( var2 )) do  read(var)  else  while( ==  * ( var1 ) -  + ( 10 )
+  * ( + ( * ( -  * ( + ( -  * ( 10 ) var1 )) * ( + ( var2 )))))) read(var) when( ==  + ( var2 ) +
+  ( 10 )) do  print( -  10  + ( var1 ))  else  = var  10  when( ==  10  -  * ( 10 ) -  var1  10 ) do
+  {{ = var  10  } ;  print( + ( var1 )) } when( ==  var2  + ( -  var2  var2 )) do  while( ==  var1  +
+  ( 10 )) while( ==  var1  var1 ) = var  * ( * ( 10 )) when( ==  var1  -  var2  var2 ) do  print( * (
+  * ( 10 ))) when( ==  + ( var2 ) + ( * ( 10 ))) do  = var  10   else  print( var2 )
