@@ -10,7 +10,7 @@ public class Lexer {
     private void readch(BufferedReader br) {
         try {
             peek = (char) br.read(); //leggo un char e lo metto in peek
-        
+
         } catch (IOException exc) {
             peek = (char) - 1; // ERROR
         }
@@ -24,8 +24,8 @@ public class Lexer {
             if (peek == '\n') line++;
             readch(br);
         }
-      
-        
+
+
         switch (peek) {
 
             /**GESTISCO I CASI DI SIMBOLI SINGOLI*/
@@ -37,17 +37,17 @@ public class Lexer {
                 if(peek == '/'){ //commento nella stessa linea. leggo fino a che ho un \n o un EOF
                     while(peek != (char) -1){
                         if(peek == '\n'){ //ho trovato il fine linea. leggo il char successivo ed esco
-                            if(peek != (char) -1 )readch(br); //leggo il char successivo solo a condizione che non ho un eof 
+                            if(peek != (char) -1 )readch(br); //leggo il char successivo solo a condizione che non ho un eof
                             break;
                         }
                         readch(br); //commento inline. leggo fino a che non incontro nuova linea o fino a che non finisce il file
-                    } 
+                    }
                 }else if(peek == '*'){ //ho trovato un commento multilinea
                     boolean mLCommentClosed = false; //variabile che mi dice se ho un commento multilinea chiuso con successo. serve per verificare all'uscita del ciclo while se sono uscito per commento chiuso o per EOF trovato
                     while(peek != (char) -1){ //ciclo fino a che non ho un EOF
                         if(peek == '*'){ // se il char è una * potrei avere dopo un / ma non sono sicuro quindi controllo
                             readch(br); //leggo il simbolo dopo
-                            if(peek == '/'){ 
+                            if(peek == '/'){
                                 //commento multilinea finito
                                 //mi sposto al carattere successivo ed esco
                                 readch(br);
@@ -63,7 +63,6 @@ public class Lexer {
                         return null;
                     }
                 }else{
-                    peek = ' ';
                     return Token.div;
                 }
                 return lexical_scan(br); // se arrivo in questo punto, riavvio la scansione lessicale, dopo avere modificaro il valore in cima a peek!
@@ -71,7 +70,7 @@ public class Lexer {
 
 
 
-			        
+
 			case '!':
                 peek = ' '; //questo peek lo metto per poter ritornare il giro successivo al while a inizio codice
                 return Token.not;
@@ -104,8 +103,8 @@ public class Lexer {
 
             case '*':
                 peek = ' ';
-                return Token.mult;               
-                
+                return Token.mult;
+
 
             case ';':
                 peek = ' ';
@@ -117,13 +116,13 @@ public class Lexer {
 
 
             /**GESTISCO I CASI DI SINGOLI SIMBOLI E DELL'= E DEI < E > IN QUANTO DEVO DISAMBIGUARE SE SONO >= O <= */
-            //questi sono automi del tipo 
+            //questi sono automi del tipo
             //                                ______
             //                 s1       s2    |    |
             //       ---->Q0------>Q1-------->| Q2 |
             //                                |____|
 
-            
+
             case '&':
                 readch(br);
                 if (peek == '&') {
@@ -134,7 +133,7 @@ public class Lexer {
                     return null;
                 }
 
-    
+
             case '|':
                 readch(br);
                 if (peek == '|') {
@@ -189,11 +188,11 @@ public class Lexer {
 
 
             default:
-                
+
                 //SCEGLIERE COME GESTIRE CASI DEL TIPO VAR/*COMM*/IABILE = 25;
-                
+
                 /**GESTIONE DEI CARATTERI DI TESTO */
-                if (Character.isLetter(peek) || (peek == '_') ) { 
+                if (Character.isLetter(peek) || (peek == '_') ) {
 
                     //variabili booleane usate per verificare che non ho solo sequenza di {_}{_}*
                     //in pratica vado a controllare che stringa inizia con underscore
@@ -228,12 +227,12 @@ public class Lexer {
                     //e quindi posso dire che ho un errore.
                     //questa versione è più snella che controlare con tutti if
 
-                    if (("|&!(){}+-*/=;><_ ".indexOf(peek) < 0) && !(peek == ' ' || peek == '\t' || peek == '\n' || peek == '\r' || peek == (char)-1)){  
+                    if (("|&!(){}+-*/=;><_ ".indexOf(peek) < 0) && !(peek == ' ' || peek == '\t' || peek == '\n' || peek == '\r' || peek == (char)-1)){
 						System.err.println("Error: found invalid character:" + peek + " at line " + line); //carattere non ammesso. esco
                         return null;
                     }
 
-                    
+
 
 
                     //CONTROLLO CHE IL MIO LESSEMA NON SIA UNA KEYWORD E NEL CASO LO SIA RITORNO LA KEYWORD, ALTRIMENTI RITORNO UN IDENTIFICATORE
@@ -246,29 +245,29 @@ public class Lexer {
                         case "when":
                             return Word.when;
 
-                        case "then":							
+                        case "then":
                             return Word.then;
 
-                        case "else":							
+                        case "else":
                             return Word.elsetok;
 
-                        case "while":							
+                        case "while":
                             return Word.whiletok;
 
-                        case "do":							
+                        case "do":
                             return Word.dotok;
 
-                        case "seq":							
+                        case "seq":
                             return Word.seq;
 
-                        case "print":							
+                        case "print":
                             return Word.print;
 
-                        case "read":							
+                        case "read":
                             return Word.read;
 
 
-                        default:                            
+                        default:
                             return new Word(Tag.ID, lessema);
                     }
 
@@ -285,9 +284,9 @@ public class Lexer {
 
                     } while (Character.isDigit(peek) && (peek != ' ') && (peek != (char) - 1));
 
-                    
+
                     //RITORNO UN NUOVO NUMERO
-                    
+
                     return new NumberTok(Tag.NUM, lessema);
 
 
