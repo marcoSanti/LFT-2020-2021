@@ -16,7 +16,7 @@ public class Valutatore {
         System.out.println("token = " + look);
     }
     void error(String s) {
-        throw new Error(s);
+        throw new Error(s + "@:<line:" + lex.line+ ">:<symbol:" + lex.lineChar+">");
     }
     void match(int t) {
         if (look.tag == t) {
@@ -36,7 +36,7 @@ public class Valutatore {
             break;
 
           default:
-            error("Parse error start at line:" + lex.line);
+            error("Parse error start ");
 
         }
     }
@@ -54,7 +54,7 @@ public class Valutatore {
                 break;
 
             default:
-                error("Parse error expr at line:" + lex.line);
+                error("Parse error expr ");
         }
 
         // ... completare ...
@@ -88,7 +88,7 @@ public class Valutatore {
                   break;
 
               default:
-                  error("Parse error exprp at line:" + lex.line);
+                  error("Parse error exprp ");
 
         }
 
@@ -111,7 +111,7 @@ public class Valutatore {
               break;
 
           default:
-              error("Parse error term at line:" + lex.line);
+              error("Parse error term ");
       }
 
       return termp_val;
@@ -145,7 +145,7 @@ public class Valutatore {
               break;
 
           default:
-              error("Parse Error termp at line:" + lex.line);
+              error("Parse Error termp ");
 
 
       }
@@ -174,7 +174,7 @@ public class Valutatore {
               break;
 
           default:
-              error("Parse error fact. at line:" + lex.line);
+              error("Parse error fact.");
       }
 
       return fact_val;

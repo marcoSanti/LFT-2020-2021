@@ -19,7 +19,7 @@ public class Parser {
     void match(int t) {
         if (look.tag == t) {
             if (look.tag != Tag.EOF) move();
-        } else error("syntax error");
+        } else error("syntax error @:" + lex.line+ ":" + lex.lineChar);
     }
 
 
@@ -34,10 +34,10 @@ public class Parser {
                 match(Tag.EOF);
                 break;
 
-            default: 
-                error("Parse error start at line:" + lex.line);
+            default:
+                error("Parse error start @:" + lex.line+ ":" + lex.lineChar);
         }
-        
+
 
     }
 
@@ -52,7 +52,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error expr at line:" + lex.line);
+                error("Parse error expr @:" + lex.line+ ":" + lex.lineChar);
         }
     }
 
@@ -65,20 +65,20 @@ public class Parser {
                 term();
                 exprp();
                 break;
-            
+
             case '-':
                 match('-');
                 term();
                 exprp();
-            
+
             case ')':
             case -1:
                 break;
 
             default:
-                error("Parse error exprp at line:" + lex.line);
+                error("Parse error exprp @:" + lex.line+ ":" + lex.lineChar);
 
-            
+
         }
     }
 
@@ -93,7 +93,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error term at line:" + lex.line);
+                error("Parse error term @:" + lex.line+ ":" + lex.lineChar);
         }
     }
 
@@ -105,13 +105,13 @@ public class Parser {
                 fact();
                 termp();
                 break;
-            
+
             case '/':
                 match('/');
                 fact();
                 termp();
                 break;
-            
+
             case ')':
             case -1:
             case '+':
@@ -119,9 +119,9 @@ public class Parser {
                 break;
 
             default:
-                error("Parse Error termp at line:" + lex.line);
-            
-            
+                error("Parse Error termp @:" + lex.line+ ":" + lex.lineChar);
+
+
         }
     }
 
@@ -139,7 +139,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error fact. at line:" + lex.line);
+                error("Parse error fact @:" + lex.line+ ":" + lex.lineChar);
         }
     }
 

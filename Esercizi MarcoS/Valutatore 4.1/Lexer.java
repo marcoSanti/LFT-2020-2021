@@ -5,6 +5,8 @@ import java.util.*;
 public class Lexer {
 
     public static int line = 1;
+    public static int lineChar =1; /*questa variabile serve a mostrare il carattere in cui si trova il lexer. in caso di errore permette di andare a raffinare ulteriormente l'individuazione del problema*/
+
     private char peek = ' ';
 
     private void readch(BufferedReader br) {
@@ -12,6 +14,8 @@ public class Lexer {
             peek = (char) br.read(); //leggo un char e lo metto in peek
         } catch (IOException exc) {
             peek = (char) - 1; // ERROR
+        }finally{
+          lineChar++; /*se ho letto un nuovo carattere allora, ho appena passato di posizione +1 a dx quindi aggiorno la posizione del carattere*/
         }
     }
 
@@ -20,7 +24,10 @@ public class Lexer {
 
         //questo lo eseguo fino a che hp un carattere WS. quando non lo ho più esco dal ciclo
         while (peek == ' ' || peek == '\t' || peek == '\n' || peek == '\r') {
-            if (peek == '\n') line++;
+            if (peek == '\n'){
+                line++;
+                lineChar = 1; /*se ho trovato un \n allora sono a una linea nuova e reimposto la posizione del carattere*/
+            }
             readch(br);
         }
 
