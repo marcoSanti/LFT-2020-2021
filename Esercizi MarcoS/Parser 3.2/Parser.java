@@ -13,9 +13,15 @@ public class Parser {
         look = lex.lexical_scan(pbr);
         System.out.println("token = " + look);
     }
+
     void error(String s) {
-        throw new Error(s);
+        /*classe modificata per potere mostrare anche la posizione dell'errore trovato sia come numero che visivamente */
+        lex.currentLine += "\n";
+        for(int i = 1; i<lex.lineChar-1; i++)lex.currentLine += ' ';
+        lex.currentLine+='^';
+        throw new Error(s + " @<Line:" + lex.line+ "> -> <Column:" + lex.lineChar+">\n\n" + lex.currentLine + "\n");
     }
+
     void match(int t) {
         if (look.tag == t) {
             if (look.tag != Tag.EOF) move();
@@ -37,7 +43,7 @@ public class Parser {
             match(Tag.EOF);
             break;
 
-        default : error("Error on prog() at line: " + lex.line  + ". Found: " + look.tag);
+        default : error("Error on prog(). Found: " + look.tag);
       }
   }
 
@@ -54,7 +60,7 @@ public class Parser {
             statlistp();
             break;
 
-        default : error("Error on statlist() at line: " + lex.line  + ". Found: " + look.tag);
+        default : error("Error on statlist(). Found: " + look.tag);
       }
   }
 
@@ -70,7 +76,7 @@ public class Parser {
             statlistp();
             break;
 
-        default: error("Error on statlistp() at line: " + lex.line  + ". Found: " + look.tag);
+        default: error("Error on statlistp(). Found: " + look.tag);
       }
   }
 
@@ -119,7 +125,7 @@ public class Parser {
 
 
 
-        default : error("Error on stat() at line: "+ lex.line + ". Found: " + look.tag);
+        default : error("Error on stat(). Found: " + look.tag);
       }
   }
 
@@ -130,7 +136,7 @@ public class Parser {
             whenlistp();
             break;
 
-        default: error("Error on whenlist() at line: "+lex.line+ ". Found: " + look.tag);
+        default: error("Error on whenlist(). Found: " + look.tag);
     }
   }
 
@@ -144,7 +150,7 @@ public class Parser {
         case Tag.ELSE:
             break;
 
-        default: error("Error on whenlistp() at line: " + lex.line+ ". Found: " + look.tag);
+        default: error("Error on whenlistp(). Found: " + look.tag);
       }
   }
 
@@ -159,7 +165,7 @@ public class Parser {
             stat();
             break;
 
-        default: error("Error on whenitem() at line: " + lex.line+ ". Found: " + look.tag);
+        default: error("Error on whenitem(). Found: " + look.tag);
       }
   }
 
@@ -171,7 +177,7 @@ public class Parser {
             expr();
             break;
 
-        default: error("Error on bexpr() at line: " + lex.line+ ". Found: " + look.tag);
+        default: error("Error on bexpr(). Found: " + look.tag);
       }
   }
 
@@ -211,7 +217,7 @@ public class Parser {
             match(Tag.ID);
             break;
 
-        default: error("Error on expr() at line: " + lex.line+ ". Found: " + look.tag);
+        default: error("Error on expr(). Found: " + look.tag);
       }
   }
 
@@ -227,7 +233,7 @@ public class Parser {
             exprlistp();
             break;
 
-        default: error("Error on exprlist() at line: " + lex.line+ ". Found: " + look.tag);
+        default: error("Error on exprlist(). Found: " + look.tag);
       }
   }
 
@@ -246,7 +252,7 @@ public class Parser {
       case ')':
         break;
 
-      default: error("Error on exprlist() at line: " + lex.line+ ". Found: " + look.tag);
+      default: error("Error on exprlist(). Found: " + look.tag);
     }
   }
 

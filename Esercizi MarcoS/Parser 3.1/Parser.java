@@ -13,9 +13,15 @@ public class Parser {
         look = lex.lexical_scan(pbr);
         System.out.println("token = " + look);
     }
+
     void error(String s) {
-        throw new Error(s);
+        /*classe modificata per potere mostrare anche la posizione dell'errore trovato sia come numero che visivamente */
+        lex.currentLine += "\n";
+        for(int i = 1; i<lex.lineChar-1; i++)lex.currentLine += ' ';
+        lex.currentLine+='^';
+        throw new Error(s + " @<Line:" + lex.line+ "> -> <Column:" + lex.lineChar+">\n\n" + lex.currentLine + "\n");
     }
+
     void match(int t) {
         if (look.tag == t) {
             if (look.tag != Tag.EOF) move();
@@ -35,7 +41,7 @@ public class Parser {
                 break;
 
             default: 
-                error("Parse error start at line:" + lex.line);
+                error("Parse error start Found: " + look.tag);
         }
         
 
@@ -52,7 +58,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error expr at line:" + lex.line);
+                error("Parse error expr Found: " + look.tag);
         }
     }
 
@@ -76,7 +82,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error exprp at line:" + lex.line);
+                error("Parse error exprp Found: " + look.tag);
 
             
         }
@@ -93,7 +99,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error term at line:" + lex.line);
+                error("Parse error term Found: " + look.tag);
         }
     }
 
@@ -119,7 +125,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse Error termp at line:" + lex.line);
+                error("Parse Error termp Found: " + look.tag);
             
             
         }
@@ -139,7 +145,7 @@ public class Parser {
                 break;
 
             default:
-                error("Parse error fact. at line:" + lex.line);
+                error("Parse error fact. Found: " + look.tag);
         }
     }
 

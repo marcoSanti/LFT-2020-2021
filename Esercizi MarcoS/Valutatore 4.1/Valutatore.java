@@ -15,9 +15,17 @@ public class Valutatore {
         look = lex.lexical_scan(pbr);
         System.out.println("token = " + look);
     }
+
+
     void error(String s) {
-        throw new Error(s + "@:<line:" + lex.line+ ">:<symbol:" + lex.lineChar+">");
+        /*classe modificata per potere mostrare anche la posizione dell'errore trovato sia come numero che visivamente */
+        lex.currentLine += "\n";
+        for(int i = 1; i<lex.lineChar-1; i++)lex.currentLine += ' ';
+        lex.currentLine+='^';
+        throw new Error(s + " @<Line:" + lex.line+ "> -> <Column:" + lex.lineChar+">\n\n" + lex.currentLine + "\n");
     }
+
+
     void match(int t) {
         if (look.tag == t) {
             if (look.tag != Tag.EOF) move();
@@ -36,7 +44,7 @@ public class Valutatore {
             break;
 
           default:
-            error("Parse error start ");
+            error("Parse error start Found: " + look.tag);
 
         }
     }
@@ -54,7 +62,7 @@ public class Valutatore {
                 break;
 
             default:
-                error("Parse error expr ");
+                error("Parse error expr Found: " + look.tag);
         }
 
         // ... completare ...
@@ -88,7 +96,7 @@ public class Valutatore {
                   break;
 
               default:
-                  error("Parse error exprp ");
+                  error("Parse error exprp  Found: " + look.tag);
 
         }
 
@@ -111,7 +119,7 @@ public class Valutatore {
               break;
 
           default:
-              error("Parse error term ");
+              error("Parse error term  Found: " + look.tag);
       }
 
       return termp_val;
@@ -145,7 +153,7 @@ public class Valutatore {
               break;
 
           default:
-              error("Parse Error termp ");
+              error("Parse Error termp  Found: " + look.tag);
 
 
       }
@@ -174,7 +182,7 @@ public class Valutatore {
               break;
 
           default:
-              error("Parse error fact.");
+              error("Parse error fact " + look.tag);
       }
 
       return fact_val;

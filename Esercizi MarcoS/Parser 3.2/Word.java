@@ -1,6 +1,6 @@
 /**
 	classe che estende i token e considera anche i lessemi con piu simboli. devo modificare perchè qua devo stampare ache il lessema!
- */
+ */ 
 
 public class Word extends Token {
 

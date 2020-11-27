@@ -6,6 +6,7 @@ public class Lexer {
 
     public static int line = 1;
     public static int lineChar =1; /*questa variabile serve a mostrare il carattere in cui si trova il lexer. in caso di errore permette di andare a raffinare ulteriormente l'individuazione del problema*/
+    public static String currentLine = "";
 
     private char peek = ' ';
 
@@ -16,6 +17,7 @@ public class Lexer {
             peek = (char) - 1; // ERROR
         }finally{
           lineChar++; /*se ho letto un nuovo carattere allora, ho appena passato di posizione +1 a dx quindi aggiorno la posizione del carattere*/
+          currentLine +=peek;
         }
     }
 
@@ -27,6 +29,7 @@ public class Lexer {
             if (peek == '\n'){
                 line++;
                 lineChar = 1; /*se ho trovato un \n allora sono a una linea nuova e reimposto la posizione del carattere*/
+                currentLine = "";
             }
             readch(br);
         }

@@ -5,7 +5,7 @@
 
 public class NumberTok extends Token {
 
-	int number;
+	int number; 
 
 	public String toString() { return "< " + tag + " , " + number + " >"; }
 
