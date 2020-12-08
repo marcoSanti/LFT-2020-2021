@@ -67,18 +67,15 @@ public class Translator {
     case Tag.COND:
     case Tag.WHILE:
     case '{':
-      {
-
         stat();
-
         statlistp();
         break;
-      }
 
     default:
       error("Error on statlist(). Found: " + look.tag);
     }
   }
+
 
   public void statlistp() {
     switch (look.tag) {
@@ -87,15 +84,11 @@ public class Translator {
       break;
 
     case ';':
-      {
         match(';');
-
         stat();
-
         statlistp();
-
         break;
-      }
+
 
     default:
       error("Error on statlistp(). Found: " + look.tag);
@@ -123,23 +116,17 @@ public class Translator {
       }
 
     case Tag.PRINT:
-      {
         match(Tag.PRINT);
         match('(');
-
         exprlist();
-
         code.emit(OpCode.invokestatic, 1);
-
         match(')');
         break;
-      }
+      
 
-    case '=':
-      {
-        match('=');
-        Token id_token = look; //mi salco id del token cos' posso poi avere anche il valore dell'id per potere avere un nuovo elemento nella tabella dei simboli
-        String toke_name = ((Word) id_token).lexeme;
+    case '=':{
+        match('='); 
+        String toke_name = ((Word) look).lexeme; //mi salco id del token cos' posso poi avere anche il valore dell'id per potere avere un nuovo elemento nella tabella dei simboli
         match(Tag.ID);
 
         expr();
@@ -154,15 +141,13 @@ public class Translator {
         break;
       }
 
-    case Tag.COND:
-      {
+    case Tag.COND:{
         match(Tag.COND);
         int cond_done_l = code.newLabel();
 
         whenlist(cond_done_l);
 
-        match(Tag.
-        ELSE);
+        match(Tag.ELSE);
 
         stat();
         code.emitLabel(cond_done_l); //se ho fatto una roba dentro un do allora finisco qua
@@ -170,8 +155,8 @@ public class Translator {
         break;
       }
 
-    case Tag.WHILE:
-      {
+    case Tag.WHILE:{
+
         int bexpr_true_l = code.newLabel();
         int bexpr_false_l = code.newLabel();
         int l_stat1_next = code.newLabel();
@@ -195,8 +180,7 @@ public class Translator {
         break;
       }
 
-    case '{':
-      {
+    case '{':{
         match('{');
 
         statlist();
@@ -212,130 +196,121 @@ public class Translator {
 
   public void whenlist(int done_l) {
     switch (look.tag) {
-    case Tag.WHEN:
-      {
+        case Tag.WHEN:{
 
-        whenitem(done_l);
+            whenitem(done_l);
+            whenlistp(done_l);
 
-        whenlistp(done_l);
+            break;
+        }
 
-        break;
-      }
-
-    default:
-      error("Error on whenlist(). Found: " + look.tag);
+        default:
+        error("Error on whenlist(). Found: " + look.tag);
     }
   }
 
   public void whenlistp(int done_l) {
     switch (look.tag) {
-    case Tag.WHEN:
-      {
+        case Tag.WHEN:{
 
-        whenitem(done_l);
+            whenitem(done_l);
 
-        //int whenlistp1_next_label = code.newLabel();
-        whenlistp(done_l);
+            whenlistp(done_l);
 
+            break;
+        }
+
+        case Tag.ELSE:
         break;
-      }
 
-    case Tag.
-      ELSE:
-      break;
-
-    default:
-      error("Error on whenlistp(). Found: " + look.tag);
+        default: error("Error on whenlistp(). Found: " + look.tag);
     }
   }
 
   public void whenitem(int whenitem_done_l) {
     switch (look.tag) {
-    case Tag.WHEN:
-      {
-        match(Tag.WHEN);
-        match('(');
+        case Tag.WHEN:{
+            match(Tag.WHEN);
+            match('(');
 
-        int bexpr_true_l = code.newLabel();
-        int bexpr_false_l = code.newLabel();
-        bexpr(bexpr_false_l, bexpr_true_l);
+            int bexpr_true_l = code.newLabel();
+            int bexpr_false_l = code.newLabel();
+            bexpr(bexpr_false_l, bexpr_true_l);
 
-        match(')');
+            match(')');
 
-        match(Tag.DO);
-        code.emitLabel(bexpr_true_l);
-        stat(); //cambiare in 0
-        code.emit(OpCode.GOto, whenitem_done_l);
+            match(Tag.DO);
+            code.emitLabel(bexpr_true_l);
+            stat(); //cambiare in 0
+            code.emit(OpCode.GOto, whenitem_done_l);
 
-        code.emitLabel(bexpr_false_l);
+            code.emitLabel(bexpr_false_l);
 
-        break;
-      }
+            break;
+        }
 
-    default:
-      error("Error on whenitem(). Found: " + look.tag);
+        default: error("Error on whenitem(). Found: " + look.tag);
     }
 
   }
 
   public void bexpr(int bexpr_false_l, int bexpr_true_l) {
     switch (look.tag) {
-    case Tag.RELOP:
-      {
-        String relOperator = ((Word) look).lexeme;
-        match(Tag.RELOP);
+        case Tag.RELOP:{
+            String relOperator = ((Word) look).lexeme;
+            match(Tag.RELOP);
 
-        expr();
+            expr();
+            expr();
 
-        expr();
-        if (relOperator.equals(Word.or.lexeme)) {
+            if (relOperator.equals(Word.or.lexeme)) {
 
-          code.emit(OpCode.ior, bexpr_true_l); //se vero
-          code.emit(OpCode.GOto, bexpr_false_l); //se falso 
+                code.emit(OpCode.ior, bexpr_true_l); //se vero
+                code.emit(OpCode.GOto, bexpr_false_l); //se falso 
 
-        } else if (relOperator.equals(Word.and.lexeme)) {
+            } else if (relOperator.equals(Word.and.lexeme)) {
 
-          code.emit(OpCode.iand, bexpr_true_l);
-          code.emit(OpCode.GOto, bexpr_false_l);
+                code.emit(OpCode.iand, bexpr_true_l);
+                code.emit(OpCode.GOto, bexpr_false_l);
 
-        } else if (relOperator.equals(Word.lt.lexeme)) {
+            } else if (relOperator.equals(Word.lt.lexeme)) {
 
-          code.emit(OpCode.if_icmplt, bexpr_true_l);
-          code.emit(OpCode.GOto, bexpr_false_l);
+                code.emit(OpCode.if_icmplt, bexpr_true_l);
+                code.emit(OpCode.GOto, bexpr_false_l);
 
-        } else if (relOperator.equals(Word.gt.lexeme)) {
+            } else if (relOperator.equals(Word.gt.lexeme)) {
 
-          code.emit(OpCode.if_icmpgt, bexpr_true_l);
-          code.emit(OpCode.GOto, bexpr_false_l);
+                code.emit(OpCode.if_icmpgt, bexpr_true_l);
+                code.emit(OpCode.GOto, bexpr_false_l);
 
-        } else if (relOperator.equals(Word.eq.lexeme)) {
+            } else if (relOperator.equals(Word.eq.lexeme)) {
 
-          code.emit(OpCode.if_icmpeq, bexpr_true_l);
-          code.emit(OpCode.GOto, bexpr_false_l);
+                code.emit(OpCode.if_icmpeq, bexpr_true_l);
+                code.emit(OpCode.GOto, bexpr_false_l);
 
-        } else if (relOperator.equals(Word.le.lexeme)) {
+            } else if (relOperator.equals(Word.le.lexeme)) {
 
-          code.emit(OpCode.if_icmple, bexpr_true_l);
-          code.emit(OpCode.GOto, bexpr_false_l);
+                code.emit(OpCode.if_icmple, bexpr_true_l);
+                code.emit(OpCode.GOto, bexpr_false_l);
 
-        } else if (relOperator.equals(Word.ne.lexeme)) {
+            } else if (relOperator.equals(Word.ne.lexeme)) {
 
-          code.emit(OpCode.if_icmpne, bexpr_true_l);
-          code.emit(OpCode.GOto, bexpr_false_l);
+                code.emit(OpCode.if_icmpne, bexpr_true_l);
+                code.emit(OpCode.GOto, bexpr_false_l);
 
-        } else if (relOperator.equals(Word.ge.lexeme)) {
+            } else if (relOperator.equals(Word.ge.lexeme)) {
 
-          code.emit(OpCode.if_icmpge, bexpr_true_l);
-          code.emit(OpCode.GOto, bexpr_false_l);
+                code.emit(OpCode.if_icmpge, bexpr_true_l);
+                code.emit(OpCode.GOto, bexpr_false_l);
 
-        } else {
-          error("Error: unknown RelOp!");
+            } else {
+                error("Error: unknown RelOp!");
+            }
+            break;
         }
-        break;
-      }
 
-    default:
-      error("Error on bexpr(). Found: " + look.tag);
+        default: error("Error on bexpr(). Found: " + look.tag);
+
     }
   }
 
@@ -382,16 +357,14 @@ public class Translator {
       code.emit(OpCode.idiv);
       break;
 
-    case Tag.NUM:
-      {
+    case Tag.NUM:{
         NumberTok number = (NumberTok) look;
         match(Tag.NUM);
         code.emit(OpCode.ldc, number.number);
         break;
       }
 
-    case Tag.ID:
-      {
+    case Tag.ID:{
         String id_name = ((Word) look).lexeme;
         match(Tag.ID);
         int identifier = st.lookupAddress(id_name);
@@ -415,8 +388,7 @@ public class Translator {
     case '*':
     case '/':
     case Tag.NUM:
-    case Tag.ID:
-      {
+    case Tag.ID:{
         expr();
 
         exprlistp();
@@ -424,8 +396,7 @@ public class Translator {
         break;
       }
 
-    default:
-      error("Error on exprlist(). Found: " + look.tag);
+    default: error("Error on exprlist(). Found: " + look.tag);
     }
   }
 
@@ -436,19 +407,16 @@ public class Translator {
     case '*':
     case '/':
     case Tag.NUM:
-    case Tag.ID:
-      {
+    case Tag.ID:{
         expr();
 
         exprlistp();
         break;
       }
 
-    case ')':
-      break;
+    case ')': break;
 
-    default:
-      error("Error on exprlist(). Found: " + look.tag);
+    default: error("Error on exprlist(). Found: " + look.tag);
     }
   }
 
