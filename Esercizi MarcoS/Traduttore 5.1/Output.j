@@ -30,108 +30,31 @@
 .method public static run()V
  .limit stack 1024
  .limit locals 256
- ldc 20
-L0:
- istore 0
-L1:
- iload 0
-L3:
-L3:
- goto L0
- invokestatic Output/print(I)V
-L2:
  invokestatic Output/read()I
- istore 1
-L4:
- iload 1
-L9:
-L9:
- ldc 10
-L10:
- if_icmplt L8
- goto L7
-L8:
- ldc 100
-L12:
-L12:
- goto L7
- invokestatic Output/print(I)V
-L11:
- goto L7
- goto L6
-L7:
- iload 1
-L15:
-L15:
- ldc 10
-L16:
- if_icmpgt L14
- goto L0
-L14:
- ldc 200
-L18:
-L18:
- goto L0
- invokestatic Output/print(I)V
-L17:
- goto L0
- goto L6
-L13:
- iload 1
-L21:
-L21:
- ldc 10
-L22:
- if_icmpeq L20
- goto L0
-L20:
- iload 1
-L24:
-L24:
- goto L0
- invokestatic Output/print(I)V
-L23:
- goto L0
- goto L6
-L19:
- goto L0
- ldc 1
-L26:
-L26:
- goto L0
- invokestatic Output/print(I)V
-L25:
- goto L0
-L6:
-L5:
-L29:
- iload 1
-L30:
-L30:
+ istore 0
+ iload 0
  ldc 0
-L31:
- if_icmpge L0
- goto L28
-L28:
- iload 1
-L33:
-L33:
- goto L0
+ if_icmpgt L7
+ goto L8
+L7:
+ iload 0
  invokestatic Output/print(I)V
-L32:
- iload 1
-L0:
+ goto L4
+L8:
+ iload 0
+ ldc 0
+ if_icmpeq L16
+ goto L17
+L16:
+ iload 0
  ldc 1
-L0:
  isub 
-L0:
- istore 1
-L34:
- goto L0
- goto L29
-L27:
- goto L0
-L0:
+ invokestatic Output/print(I)V
+ goto L4
+L17:
+ ldc 100
+ invokestatic Output/print(I)V
+L4:
  return
 .end method
 
