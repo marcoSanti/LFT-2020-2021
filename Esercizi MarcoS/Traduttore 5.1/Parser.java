@@ -261,7 +261,7 @@ public class Parser {
 
     public static void main(String[] args) {
         Lexer lex = new Lexer();
-        String path = "test.txt"; // il percorso del file da leggere
+        String path = "test.lft"; // il percorso del file da leggere
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));

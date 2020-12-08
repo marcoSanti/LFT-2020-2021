@@ -1,0 +1,23 @@
+= a 20;
+print(a);
+
+read(b);
+
+cond
+    when (< b 10) do {
+        print(100)
+    }
+    when (> b 10) do {
+        print(200)
+    }
+    when (== b 10) do {
+        print(b)
+    }
+else {
+    print(1)
+};
+
+while (>= b 0) {
+    print(b);
+    = b - b 1
+}
