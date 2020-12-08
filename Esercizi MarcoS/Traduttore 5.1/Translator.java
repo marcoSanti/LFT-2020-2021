@@ -42,8 +42,7 @@ public class Translator {
     case Tag.READ:
     case Tag.COND:
     case Tag.WHILE:
-    case '{':
-      {
+    case '{':{
         statlist();
         match(Tag.EOF);
         try {
