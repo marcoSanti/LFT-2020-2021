@@ -1,4 +1,4 @@
-import java.io. * ;
+import java.io.*;
 
 public class Translator {
   private Lexer lex;
@@ -34,7 +34,7 @@ public class Translator {
     } else error("syntax error at line: " + Lexer.line + "\n token: " + t + " does not match expected token: " + look.tag);
   }
 
-  public void prog() {
+  private void prog() {
     switch (look.tag) {
       //facendo così rendo il codice più leggibile e meno esteso. in pratica è come se mettessi in or tutti i case!
     case '=':
@@ -57,7 +57,7 @@ public class Translator {
     }
   }
 
-  public void statlist() {
+  private void statlist() {
     switch (look.tag) {
 
     case '=':
@@ -76,7 +76,7 @@ public class Translator {
   }
 
 
-  public void statlistp() {
+  private void statlistp() {
     switch (look.tag) {
     case '}':
     case Tag.EOF:
@@ -94,7 +94,7 @@ public class Translator {
     }
   }
 
-  public void stat() {
+  private void stat() {
     switch (look.tag) {
     case Tag.READ:
       {
@@ -133,7 +133,7 @@ public class Translator {
         int position_of_token_in_st = st.lookupAddress(toke_name);
         if (position_of_token_in_st == -1) {
           code.emit(OpCode.istore, count);
-          st.insert(toke_name, count++);
+          st.insert(toke_name, count++); //questo significa, salva toke_name con il valore di count e successivamente incrementalo... Fosse stato ++count sarebbe stato incrementa prima count e poi salva toke_name con il valore appena calcolato
         } else {
           code.emit(OpCode.istore, position_of_token_in_st);
         }
@@ -193,7 +193,7 @@ public class Translator {
     }
   }
 
-  public void whenlist(int done_l) {
+  private void whenlist(int done_l) {
     switch (look.tag) {
         case Tag.WHEN:{
 
@@ -208,7 +208,7 @@ public class Translator {
     }
   }
 
-  public void whenlistp(int done_l) {
+  private void whenlistp(int done_l) {
     switch (look.tag) {
         case Tag.WHEN:{
 
@@ -226,7 +226,7 @@ public class Translator {
     }
   }
 
-  public void whenitem(int whenitem_done_l) {
+  private void whenitem(int whenitem_done_l) {
     switch (look.tag) {
         case Tag.WHEN:{
             match(Tag.WHEN);
@@ -253,7 +253,7 @@ public class Translator {
 
   }
 
-  public void bexpr(int bexpr_false_l, int bexpr_true_l) {
+  private void bexpr(int bexpr_false_l, int bexpr_true_l) {
     switch (look.tag) {
         case Tag.RELOP:{
             String relOperator = ((Word) look).lexeme;
@@ -262,49 +262,28 @@ public class Translator {
             expr();
             expr();
 
-            if (relOperator.equals(Word.or.lexeme)) {
+            //controllo tutte le possibili relop e infine aggiungo l'etichetta del falso
+            
+            if (relOperator.equals(Word.or.lexeme))         code.emit(OpCode.ior,       bexpr_true_l); //se vero
 
-                code.emit(OpCode.ior, bexpr_true_l); //se vero
-                code.emit(OpCode.GOto, bexpr_false_l); //se falso 
+            else if (relOperator.equals(Word.and.lexeme))   code.emit(OpCode.iand,      bexpr_true_l); 
 
-            } else if (relOperator.equals(Word.and.lexeme)) {
+            else if (relOperator.equals(Word.lt.lexeme))    code.emit(OpCode.if_icmplt, bexpr_true_l);
 
-                code.emit(OpCode.iand, bexpr_true_l);
-                code.emit(OpCode.GOto, bexpr_false_l);
+            else if (relOperator.equals(Word.gt.lexeme))    code.emit(OpCode.if_icmpgt, bexpr_true_l);
 
-            } else if (relOperator.equals(Word.lt.lexeme)) {
+            else if (relOperator.equals(Word.eq.lexeme))    code.emit(OpCode.if_icmpeq, bexpr_true_l);
 
-                code.emit(OpCode.if_icmplt, bexpr_true_l);
-                code.emit(OpCode.GOto, bexpr_false_l);
+            else if (relOperator.equals(Word.le.lexeme))    code.emit(OpCode.if_icmple, bexpr_true_l);
 
-            } else if (relOperator.equals(Word.gt.lexeme)) {
+            else if (relOperator.equals(Word.ne.lexeme))    code.emit(OpCode.if_icmpne, bexpr_true_l);
+                
+            else if (relOperator.equals(Word.ge.lexeme))    code.emit(OpCode.if_icmpge, bexpr_true_l);
+               
+            else error("Error: unknown RelOp!");
+            
+            code.emit(OpCode.GOto, bexpr_false_l); //se falso, evito di scrivere la linea ovunque ma la scrivo una singola volta
 
-                code.emit(OpCode.if_icmpgt, bexpr_true_l);
-                code.emit(OpCode.GOto, bexpr_false_l);
-
-            } else if (relOperator.equals(Word.eq.lexeme)) {
-
-                code.emit(OpCode.if_icmpeq, bexpr_true_l);
-                code.emit(OpCode.GOto, bexpr_false_l);
-
-            } else if (relOperator.equals(Word.le.lexeme)) {
-
-                code.emit(OpCode.if_icmple, bexpr_true_l);
-                code.emit(OpCode.GOto, bexpr_false_l);
-
-            } else if (relOperator.equals(Word.ne.lexeme)) {
-
-                code.emit(OpCode.if_icmpne, bexpr_true_l);
-                code.emit(OpCode.GOto, bexpr_false_l);
-
-            } else if (relOperator.equals(Word.ge.lexeme)) {
-
-                code.emit(OpCode.if_icmpge, bexpr_true_l);
-                code.emit(OpCode.GOto, bexpr_false_l);
-
-            } else {
-                error("Error: unknown RelOp!");
-            }
             break;
         }
 
@@ -313,7 +292,7 @@ public class Translator {
     }
   }
 
-  public void expr() {
+  private void expr() {
     switch (look.tag) {
     case '+':
       match('+');
@@ -380,7 +359,7 @@ public class Translator {
     }
   }
 
-  public void exprlist() {
+  private void exprlist() {
     switch (look.tag) {
     case '+':
     case '-':
@@ -399,7 +378,7 @@ public class Translator {
     }
   }
 
-  public void exprlistp() {
+  private void exprlistp() {
     switch (look.tag) {
     case '+':
     case '-':
@@ -421,8 +400,13 @@ public class Translator {
 
   public static void main(String[] args) {
     Lexer lex = new Lexer();
-
-    String path = "./test.lft";
+    String path;
+    if(args.length == 0){ //se non specifico filename allora apro il file default.lft altrimenti apro args[0]
+       path= "./default.lft";
+    }else{
+       path = args[0];
+    }
+    
     try {
       BufferedReader br = new BufferedReader(new FileReader(path));
       Translator translator = new Translator(lex, br);
