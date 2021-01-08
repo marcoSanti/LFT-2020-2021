@@ -17,14 +17,19 @@ while (>= a 0) {
 	= a - a 1
 	
 }
-*/
+
 
 read(a);
 
 cond 
 
-	when( && (<> a 2) (> a 0) ) do print(a)
+	when( || (<> a 2) (< a 0) ) do print(a)
 
 else{
 	print(3)
 }
+*/
+read(x);
+cond
+    when (|| (< x 10) (&& (> x 20) (! > x 30))) do print(+(x 100))
+    else print(x)

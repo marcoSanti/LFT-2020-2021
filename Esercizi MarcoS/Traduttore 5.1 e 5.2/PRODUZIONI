@@ -18,6 +18,9 @@ WHENLISTP → ε
 WHENITEM →when ( BEXPR ) do STAT    X
 
 BEXPR → relop EXPR EXPR             X
+BEXPR → ! BEXPR
+BEXPR → && ( BEXPR )( BEXPR )
+BEXPR → || ( BEXPR )( BEXPR )
 
 EXPR → + ( EXPRLIST ) 
 EXPR → - EXPR EXPR
