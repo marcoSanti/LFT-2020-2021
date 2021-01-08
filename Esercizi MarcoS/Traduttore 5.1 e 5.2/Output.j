@@ -33,6 +33,11 @@
  invokestatic Output/read()I
  istore 0
  iload 0
+ ldc 2
+ if_icmpne L3
+ goto L2
+L3:
+ iload 0
  ldc 0
  if_icmpgt L1
  goto L2
@@ -41,36 +46,9 @@ L1:
  invokestatic Output/print(I)V
  goto L0
 L2:
- iload 0
- ldc 0
- if_icmpeq L3
- goto L4
-L3:
- iload 0
- ldc 1
- isub 
- invokestatic Output/print(I)V
- goto L0
-L4:
- ldc 100
+ ldc 3
  invokestatic Output/print(I)V
 L0:
- ldc 6
- istore 0
-L7:
- iload 0
- ldc 0
- if_icmpge L5
- goto L6
-L5:
- iload 0
- invokestatic Output/print(I)V
- iload 0
- ldc 1
- isub 
- istore 0
- goto L7
-L6:
  return
 .end method
 

@@ -1,5 +1,7 @@
 import java.io.*;
 
+
+
 public class Translator {
   private Lexer lex;
   private BufferedReader pbr;
@@ -254,37 +256,104 @@ public class Translator {
   }
 
   private void bexpr(int bexpr_false_l, int bexpr_true_l) {
+    boolean relOp_is_negated = look.tag == Token.not.tag;
+
+    if(relOp_is_negated) match(Token.not.tag); //controllo che abbia una negazione. se la ho alllora mi sposto al simbolo successivo altrimenti ignoro
+
+    /*idea: uso una sdd con cortocircuito come quelle illusttate dal professore padovani. controllo comunque che non abbia fatto un !&& e !||, anche se semplicemente basterebbe invertire le etichette per ottenerlo */
+
+
     switch (look.tag) {
+
+        case Tag.AND:{
+
+          if(relOp_is_negated) error("Error: illegal use of NOT operator before AND operator!"); //contollo che non ho negato una operazione booleana
+
+          match(Tag.AND);
+          int bexpr1_true_label = code.newLabel();
+
+          match('(');
+          bexpr(bexpr_false_l, bexpr1_true_label);
+          match(')');
+
+          code.emitLabel(bexpr1_true_label);
+
+          match('(');
+          bexpr(bexpr_false_l, bexpr_true_l);
+          match(')');
+
+          break;
+        }
+
+        case Tag.OR:{
+ 
+         if(relOp_is_negated) error("Error: illegal use of NOT operator before AND operator!"); //controllo che non ho negato una operazione booleana
+
+          match(Tag.OR);
+
+          int bexpr1_false_label = code.newLabel();
+
+          match('(');
+          bexpr(bexpr1_false_label, bexpr_true_l);
+          match(')');
+
+          code.emitLabel(bexpr1_false_label);
+
+          match('(');
+          bexpr(bexpr_false_l, bexpr_true_l);
+          match(')');
+
+          break;
+        }
+
         case Tag.RELOP:{
-            String relOperator = ((Word) look).lexeme;
-            match(Tag.RELOP);
 
-            expr();
-            expr();
+          String relOperator = ((Word) look).lexeme;
+          match(Tag.RELOP);
 
-            //controllo tutte le possibili relop e infine aggiungo l'etichetta del falso
-            
-            if (relOperator.equals(Word.or.lexeme))         code.emit(OpCode.ior,       bexpr_true_l); //se vero
 
-            else if (relOperator.equals(Word.and.lexeme))   code.emit(OpCode.iand,      bexpr_true_l); 
+          expr();
+          expr();
 
-            else if (relOperator.equals(Word.lt.lexeme))    code.emit(OpCode.if_icmplt, bexpr_true_l);
+          //controllo tutte le possibili relop e infine aggiungo l'etichetta del falso
+          //se invece ho una negazione di un operatore, sto ad emettere l'operazione opposta... NB il caso ! <> equivale a ==
+          //un altra alternativa a emettere operazione inversa è quella di sostituire invertire le etichette, ma questo richiede piu computazione rispetto a una emissione diretta dell'operazione opposta...
+          
+          if (relOperator.equals(Word.lt.lexeme)){
+            if(relOp_is_negated) code.emit(OpCode.if_icmpge, bexpr_true_l);
+            else code.emit(OpCode.if_icmplt, bexpr_true_l);
+          }    
 
-            else if (relOperator.equals(Word.gt.lexeme))    code.emit(OpCode.if_icmpgt, bexpr_true_l);
+          else if (relOperator.equals(Word.gt.lexeme)){
+              if(relOp_is_negated) code.emit(OpCode.if_icmple, bexpr_true_l);
+              else  code.emit(OpCode.if_icmpgt, bexpr_true_l);
+          }   
 
-            else if (relOperator.equals(Word.eq.lexeme))    code.emit(OpCode.if_icmpeq, bexpr_true_l);
+          else if (relOperator.equals(Word.eq.lexeme)){
+            if(relOp_is_negated) code.emit(OpCode.if_icmpne, bexpr_true_l);
+            else  code.emit(OpCode.if_icmpeq, bexpr_true_l);
+          }
 
-            else if (relOperator.equals(Word.le.lexeme))    code.emit(OpCode.if_icmple, bexpr_true_l);
+          else if (relOperator.equals(Word.le.lexeme)){
+            if(relOp_is_negated) code.emit(OpCode.if_icmpgt, bexpr_true_l);
+            else code.emit(OpCode.if_icmple, bexpr_true_l);
+          }    
 
-            else if (relOperator.equals(Word.ne.lexeme))    code.emit(OpCode.if_icmpne, bexpr_true_l);
-                
-            else if (relOperator.equals(Word.ge.lexeme))    code.emit(OpCode.if_icmpge, bexpr_true_l);
-               
-            else error("Error: unknown RelOp!");
-            
-            code.emit(OpCode.GOto, bexpr_false_l); //se falso, evito di scrivere la linea ovunque ma la scrivo una singola volta
+          else if (relOperator.equals(Word.ne.lexeme)){
+            if(relOp_is_negated) code.emit(OpCode.if_icmpeq, bexpr_true_l);
+            else code.emit(OpCode.if_icmpne, bexpr_true_l);
+          }    
+              
+          else if (relOperator.equals(Word.ge.lexeme)){
+            if(relOp_is_negated) code.emit(OpCode.if_icmplt, bexpr_true_l);
+            else code.emit(OpCode.if_icmpge, bexpr_true_l);
+          }    
+              
+          else error("Error: unknown RelOp!");
+          
+          code.emit(OpCode.GOto, bexpr_false_l); //se falso, evito di scrivere la linea ovunque ma la scrivo una singola volta
 
-            break;
+          break;
         }
 
         default: error("Error on bexpr(). Found: " + look.tag);

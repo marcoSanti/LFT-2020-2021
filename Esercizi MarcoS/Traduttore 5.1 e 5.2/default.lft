@@ -1,0 +1,30 @@
+/*
+read(a);
+
+cond
+	when (!> a 0) do print(a)
+
+    when (! == a 0) do print(- a 1) 
+
+else {
+	print(100)
+};
+
+= a 6;
+
+while (>= a 0) {
+	print(a);
+	= a - a 1
+	
+}
+*/
+
+read(a);
+
+cond 
+
+	when( && (<> a 2) (> a 0) ) do print(a)
+
+else{
+	print(3)
+}
