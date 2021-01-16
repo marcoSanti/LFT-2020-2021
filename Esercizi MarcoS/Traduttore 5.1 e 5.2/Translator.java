@@ -170,7 +170,7 @@ public class Translator {
 
         match(')');
 
-        code.emit(OpCode.label, bexpr_true_l);
+        code.emitLabel(bexpr_true_l);
 
         stat();
 
