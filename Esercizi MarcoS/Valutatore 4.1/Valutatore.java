@@ -65,7 +65,6 @@ public class Valutatore {
                 error("Parse error expr Found: " + look.tag);
         }
 
-        // ... completare ...
         return exprp_val;
     }
 
