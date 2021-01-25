@@ -98,7 +98,7 @@ public class Lexer {
                     peek = ' ';
                     return Word.or;
                 } else {
-                    System.err.println("Erroneous character at or search" + " after & : " + peek);
+                    System.err.println("Erroneous character at or search" + " after | : " + peek);
                     return null;
                 }
 

@@ -35,14 +35,6 @@ class DfaScan{
                     else if(ch == '_') state = 2;
                     else state = -1;
                     break;
-/* IGNORABILE IN QUANTO STATO 3 è POSSO MA LO IMPLEMENTO MANDADO DIRETTAMENTE SUBITO A -1
-MANTENGO PER RIFERIMENTO A SCHEMA SU QUADERNO E PER COMPLETEZZA
-                case 3:
-                    if((ch>='a' && ch<='z') || (ch >='A' && ch <='Z') || (ch>='0' && ch <='9') || (ch=='_')) state = 3; //caso pozzo. non posso uscire e rimango
-                    else state = -1; //esco se non ho su sigma
-                    break;
-
-*/
             }
         }
 
