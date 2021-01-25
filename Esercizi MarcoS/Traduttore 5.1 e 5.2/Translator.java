@@ -119,7 +119,7 @@ public class Translator {
     case Tag.PRINT:
         match(Tag.PRINT);
         match('(');
-        exprlist();
+        exprlist(0);
         code.emit(OpCode.invokestatic, 1);
         match(')');
         break;
@@ -341,16 +341,17 @@ public class Translator {
     }
   }
 
+  //la variabile expr ha un elemento sintetizzato che corrisponde al numero di elementi caricati nello stack se si tratta di num o di id
   private void expr() {
     switch (look.tag) {
     case '+':
       match('+');
       match('(');
 
-      exprlist();
+      exprlist('+');
+
 
       match(')');
-      code.emit(OpCode.iadd);
       break;
 
     case '-':
@@ -363,15 +364,12 @@ public class Translator {
       code.emit(OpCode.isub);
       break;
 
-    case '*':
+    case '*': //se ho solo un prodotto allora procedo a caricare un 1 e a molt
       match('*');
       match('(');
 
-      exprlist();
-
+      exprlist('*');
       match(')');
-
-      code.emit(OpCode.imul);
       break;
 
     case '/':
@@ -388,7 +386,7 @@ public class Translator {
         NumberTok number = (NumberTok) look;
         match(Tag.NUM);
         code.emit(OpCode.ldc, number.number);
-        break;
+       break;
       }
 
     case Tag.ID:{
@@ -400,15 +398,41 @@ public class Translator {
         } else {
           code.emit(OpCode.iload, identifier);
         }
-        break;
+      break;
       }
 
     default:
       error("Error on expr(). Found: " + look.tag);
     }
+   
   }
 
-  private void exprlist() {
+  private void exprlist(int operationOperand) { //idea del valore operationOperand: se ho una serie di numeri tutti dentro una somma, allora procedo a emettere una istruzione iadd o imul per ogni coppia di prodotti
+    switch (look.tag) {
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case Tag.NUM:
+    case Tag.ID:{
+        
+        if(look.tag == '*') operationOperand = '*';
+        else if (look.tag == '+') operationOperand = '+';
+        
+
+        expr();
+
+      exprlistp(operationOperand);
+
+      break;
+      }
+
+    default: error("Error on exprlist(). Found: " + look.tag);
+    }
+    
+  }
+
+  private void exprlistp(int operationOperand) {
     switch (look.tag) {
     case '+':
     case '-':
@@ -418,33 +442,23 @@ public class Translator {
     case Tag.ID:{
         expr();
 
-        exprlistp();
+        exprlistp(operationOperand);
+
+        if(operationOperand == '+') code.emit(OpCode.iadd);
+        else if(operationOperand == '*') code.emit(OpCode.imul);
 
         break;
+  
       }
+
+    case ')': //se ho la produzione eps, allora vado a emettere una opcode relativa solo nel caso della somma e della moltiplicazione altrimenti nulla 
+      
+      break;
 
     default: error("Error on exprlist(). Found: " + look.tag);
     }
-  }
 
-  private void exprlistp() {
-    switch (look.tag) {
-    case '+':
-    case '-':
-    case '*':
-    case '/':
-    case Tag.NUM:
-    case Tag.ID:{
-        expr();
 
-        exprlistp();
-        break;
-      }
-
-    case ')': break;
-
-    default: error("Error on exprlist(). Found: " + look.tag);
-    }
   }
 
   public static void main(String[] args) {
