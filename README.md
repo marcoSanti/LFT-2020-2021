@@ -1,2 +1,2 @@
 # LFT-2020-2021
-File degli esercii di LFT marco e marco
+Exercises and final exam project for formal languages and translators course @ DiUniTo, by Marco and Marco
